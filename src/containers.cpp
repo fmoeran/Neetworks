@@ -97,13 +97,14 @@ std::ostream &operator<<(std::ostream &os, const Vector &v) {
 }
 
 Matrix::Matrix(int rows, int cols) : rows(rows), cols(cols), size(rows * cols){
+    data = std::make_unique<float[]>(size);
     data = std::unique_ptr<float[]>(new(std::align_val_t(32)) float[size]);
     std::memset(data.get(), 0, rows*cols*sizeof(float));
 }
 
 float& Matrix::at(int row, int col) const {
-    //assert(row < rows && col < cols);
-    return  data[row * cols + col];
+    assert(row < rows && col < cols);
+    return data[row * cols + col];
 }
 
 void Matrix::operator+=(float scalar) {
