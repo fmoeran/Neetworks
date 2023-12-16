@@ -12,4 +12,4 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 file(GLOB SOURCE_FILES src/*.hpp src/*.cpp)
 
-add_executable(AI ${SOURCE_FILES})
+add_executable(AI src/main.cpp src/containers.hpp src/containers.cpp)
