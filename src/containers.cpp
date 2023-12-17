@@ -39,87 +39,99 @@ namespace operators {
     }
 
     void vecMatMul(const Matrix &a, const Vector &b, Vector &result) {
-        assert(a.cols == b.rows && a.rows == result.rows);
-        std::memset(result.data.get(), 0, result.rows * sizeof(float));
+        assert(a.cols() == b.size() && a.rows() == result.size());
+        std::memset(result.dataPtr(), 0, result.size() * sizeof(float));
 
-        for (int row = 0; row < a.rows; row++) {
-            for (int col = 0; col < b.rows; col++) {
-                result.data[row] += a.at(row, col) * b.data[col];
+        for (int row = 0; row < a.rows(); row++) {
+            for (int col = 0; col < b.size(); col++) {
+                result.dataPtr()[row] += a.at(row, col) * b.dataPtr()[col];
             }
         }
     }
 
     float dot(const Vector &a, const Vector &b) {
-        assert(a.rows == b.rows);
+        assert(a.size() == b.size());
         float out = 0.0f;
-        for (int i = 0; i < a.rows; i++) {
-            out += a.data[i] * b.data[i];
+        for (int i = 0; i < a.size(); i++) {
+            out += a.dataPtr()[i] * b.dataPtr()[i];
         }
         return out;
     }
 }
 
 
-Vector::Vector(int size): rows(size) {
-    data = std::make_unique<float[]>(size);
-    std::memset(data.get(), 0, rows*sizeof(float));
+Vector::Vector(int rows): _rows(rows) {
+    _data = std::make_unique<float[]>(rows);
+    std::memset(dataPtr(), 0, rows*sizeof(float));
 }
 
 void Vector::operator+=(float scalar) {
-    operators::add(data.get(), scalar, data.get(), rows);
+    operators::add(dataPtr(), scalar, dataPtr(), _rows);
 }
 
 void Vector::operator+=(const Vector &vector) {
-    assert(rows == vector.rows);
-    operators::add(data.get(), vector.data.get(), data.get(), rows);
+    assert(size() == vector.size());
+    operators::add(dataPtr(), vector.dataPtr(), dataPtr(), size());
 }
 
 void Vector::operator*=(float scalar) {
-    operators::mul(data.get(), scalar, data.get(), rows);
+    operators::mul(dataPtr(), scalar, dataPtr(), size());
 }
 
-float &Vector::operator[](size_t ind) {
-    return data[ind];
+float &Vector::operator[](size_t ind) const {
+    return _data[ind];
 }
 
 void Vector::operator=(std::vector<float> vec) {
-    assert(rows == vec.size());
+    assert(size() == vec.size());
 
-    std::memcpy(data.get(), vec.begin().base(), rows * sizeof(float));
+    std::memcpy(dataPtr(), vec.begin().base(), size() * sizeof(float));
 }
 
 std::ostream &operator<<(std::ostream &os, const Vector &v) {
-    for (int r=0; r<v.rows; r++) {
-        os << v.data[r];
+    for (int r=0; r<v.size(); r++) {
+        os << v.dataPtr()[r];
         os << std::string(" ");
     }
     return os;
 }
 
-Matrix::Matrix(int rows, int cols) : rows(rows), cols(cols), size(rows * cols){
-    data = std::make_unique<float[]>(size);
-    data = std::unique_ptr<float[]>(new(std::align_val_t(32)) float[size]);
-    std::memset(data.get(), 0, rows*cols*sizeof(float));
+size_t Vector::size() const{
+    return _rows;
 }
 
-float& Matrix::at(int row, int col) const {
-    assert(row < rows && col < cols);
-    return data[row * cols + col];
+float *Vector::dataPtr() const{
+    return _data.get();
+}
+
+Matrix::Matrix(int rows, int cols) : _rows(rows), _cols(cols){
+    _data = std::make_unique<float[]>(size());
+    std::memset(dataPtr(), 0, rows*cols*sizeof(float));
+}
+
+float Matrix::at(int row, int col) const {
+    assert(row < _rows && col < _cols);
+    return _data[row * _cols + col];
+}
+
+float* Matrix::operator[](size_t row) const{
+    assert(row<_rows);
+    return dataPtr() + row*_cols;
 }
 
 void Matrix::operator+=(float scalar) {
-    operators::add(data.get(), scalar, data.get(), size);
+    operators::add(dataPtr(), scalar, dataPtr(), size());
 }
 void Matrix::operator+=(const Matrix &matrix) {
-    operators::add(data.get(), matrix.data.get(), data.get(), size);
+    operators::add(dataPtr(), matrix.dataPtr(), dataPtr(), size());
 }
 void Matrix::operator*=(float scalar) {
-    operators::mul(data.get(), scalar, data.get(), size);
+    operators::mul(dataPtr(), scalar, dataPtr(), size());
 }
 
 std::ostream &operator<<(std::ostream &os, Matrix const &m) {
-    for (int r=0; r<m.rows; r++) {
-        for (int c=0; c<m.cols; c++) {
+    for (int r=0; r<m.rows(); r++) {
+        for (int c=0; c<m.cols(); c++) {
             os << std::to_string(m.at(r, c));
             os << std::string(" ");
         }
@@ -127,6 +139,24 @@ std::ostream &operator<<(std::ostream &os, Matrix const &m) {
     }
     return os;
 }
+
+size_t Matrix::rows() const {
+    return _rows;
+}
+
+size_t Matrix::cols() const {
+    return _cols;
+}
+
+size_t Matrix::size() const {
+    return _rows*_cols;
+}
+
+float * Matrix::dataPtr() const {
+    return _data.get();
+}
+
+
 
 
 
