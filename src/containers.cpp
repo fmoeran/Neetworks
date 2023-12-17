@@ -3,34 +3,42 @@
 //
 #include "containers.hpp"
 #include <string>
-#include <new>
 #include <cassert> // assert
 #include <cstring> // memset
 #include <iostream>
+#include <random>
+
+
+Vector randomVector(size_t size) {
+    Vector out(size);
+    std::random_device rd {};
+    std::default_random_engine generator {rd()};
+    std::normal_distribution<float> distribution;
+
+    for (int i=0; i<out.size(); i++) {
+        out[i] = distribution(generator);
+    }
+    return out;
+}
+
 
 namespace operators {
-    void add(float *a, float *b, float *result, size_t size) {
-        while (size--) {
-            *result = (*a) + (*b);
-            a++;
-            b++;
-            result++;
+    void add(const float *a, const float *b, float *result, size_t size) {
+        for (int i=0; i<size; i++) {
+            result[i] = a[i] + b[i];
         }
     }
 
-    void add(float *a, float b, float *result, size_t size) {
-        while (size--) {
-            *result = (*a) + b;
-            a++; result++;
+    void add(const float *a, float b, float *result, size_t size) {
+        for (int i=0; i<size; i++) {
+            result[i] = a[i] + b;
         }
     }
 
 
-    void mul(float *a, float b, float *result, size_t size) {
-        while (size--) {
-            *result = (*a) * b;
-            a++;
-            result++;
+    void mul(const float *a, float b, float *result, size_t size) {
+        for (int i=0; i<size; i++) {
+            result[i] = a[i] * b;
         }
     }
 
@@ -60,7 +68,7 @@ namespace operators {
 }
 
 
-Vector::Vector(int rows): _rows(rows) {
+Vector::Vector(size_t rows): _rows(rows) {
     _data = std::make_unique<float[]>(rows);
     std::memset(dataPtr(), 0, rows*sizeof(float));
 }
@@ -104,12 +112,12 @@ float *Vector::dataPtr() const{
     return _data.get();
 }
 
-Matrix::Matrix(int rows, int cols) : _rows(rows), _cols(cols){
+Matrix::Matrix(size_t rows, size_t cols) : _rows(rows), _cols(cols){
     _data = std::make_unique<float[]>(size());
     std::memset(dataPtr(), 0, rows*cols*sizeof(float));
 }
 
-float Matrix::at(int row, int col) const {
+float Matrix::at(size_t row, size_t col) const {
     assert(row < _rows && col < _cols);
     return _data[row * _cols + col];
 }

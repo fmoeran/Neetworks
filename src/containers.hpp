@@ -10,11 +10,18 @@
 struct Vector;
 struct Matrix;
 
+
+// Initialises a vector with values sampled from a normal distribution
+Vector randomVector(size_t size);
+Vector randomMatrix(size_t size);
+
+
+
 namespace operators
 {
-    void add(float* a, float* b, float* result, size_t size);
-    void add(float* a, float b, float* result, size_t size);
-    void mul(float* a, float b, float* result, size_t size);
+    void add(const float* a, const float* b, float* result, size_t size);
+    void add(const float* a, float b, float* result, size_t size);
+    void mul(const float* a, float b, float* result, size_t size);
 
     void vecMatMul(const Matrix&a, const Vector& b, Vector& result);
     void vecMatMul(const Vector& a, const Matrix& b, Vector& result);
@@ -24,7 +31,7 @@ namespace operators
 
 struct Vector{
 public:
-    explicit Vector(int rows);
+    explicit Vector(size_t rows);
 
     // returns the size (number of rows) in the vector
     [[nodiscard]] size_t size() const;
@@ -51,7 +58,7 @@ private:
 
 struct Matrix {
 public:
-    Matrix(int rows, int cols);
+    Matrix(size_t rows, size_t cols);
 
     [[nodiscard]] size_t rows() const;
     [[nodiscard]] size_t cols() const;
@@ -60,7 +67,7 @@ public:
     // returns the array pointer to the first item in the contiguously stored data
     [[nodiscard]] float * dataPtr() const;
 
-    [[nodiscard]] float at(int row, int col) const;
+    [[nodiscard]] float at(size_t row, size_t col) const;
 
     float* operator[](size_t row) const;
 
