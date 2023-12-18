@@ -34,7 +34,8 @@ public:
     [[nodiscard]] size_t size() const;
 
     // returns the array pointer to the first item in the vector
-    [[nodiscard]] float* dataPtr() const;
+    [[nodiscard]] float* begin() const;
+    [[nodiscard]] float* end() const;
 
     void operator+=(float scalar);
     void operator+=(const Vector& vector);
@@ -60,7 +61,8 @@ public:
     [[nodiscard]] size_t size() const;
 
     // returns the array pointer to the first item in the contiguously stored data
-    [[nodiscard]] float * dataPtr() const;
+    [[nodiscard]] float* begin() const;
+    [[nodiscard]] float* end() const;
 
     [[nodiscard]] float at(size_t row, size_t col) const;
 

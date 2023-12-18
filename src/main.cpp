@@ -7,9 +7,8 @@ using namespace std::chrono;
 
 
 int main() {
-    __Layer* layer = new InputLayer(10);
+    Vector v(100);
 
-    std::cout << layer->getOutputs();
 
 
     return 0;
