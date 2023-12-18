@@ -13,9 +13,7 @@ struct Matrix;
 
 // Initialises a vector with values sampled from a normal distribution
 Vector randomVector(size_t size);
-Vector randomMatrix(size_t size);
-
-
+Matrix randomMatrix(size_t rows, size_t cols);
 
 namespace operators
 {
@@ -27,7 +25,6 @@ namespace operators
     void vecMatMul(const Vector& a, const Matrix& b, Vector& result);
     float dot(const Vector& a, const Vector& b);
 }
-
 
 struct Vector{
 public:
@@ -53,8 +50,6 @@ private:
     size_t _rows;
     std::unique_ptr<float[]> _data;
 };
-
-
 
 struct Matrix {
 public:
@@ -83,5 +78,6 @@ private:
     std::unique_ptr<float[]> _data;
 };
 
-
+const Vector emptyVec(0);
+const Matrix emptyMat(0, 0);
 

@@ -1,11 +1,16 @@
 #include <iostream>
 #include "containers.hpp"
+#include "layer.hpp"
+#define SIZE 50000000
+
+using namespace std::chrono;
 
 
 int main() {
-    Vector v1(4);
-    v1[0] = 1;
-    std::cout << v1 << std::endl;
-    std::cout << "hi" << std::endl;
+    __Layer* layer = new InputLayer(10);
+
+    std::cout << layer->getOutputs();
+
+
     return 0;
 }

@@ -21,6 +21,18 @@ Vector randomVector(size_t size) {
     return out;
 }
 
+Matrix randomMatrix(size_t rows, size_t cols) {
+    Matrix out(rows, cols);
+    std::random_device rd {};
+    std::default_random_engine generator {rd()};
+    std::normal_distribution<float> distribution;
+
+    for (int i=0; i<out.size(); i++) {
+        out.dataPtr()[i] = distribution(generator);
+    }
+    return out;
+}
+
 
 namespace operators {
     void add(const float *a, const float *b, float *result, size_t size) {
