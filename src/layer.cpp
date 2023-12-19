@@ -46,7 +46,7 @@ size_t DenseLayer::size() const {
 }
 
 const Vector &DenseLayer::getOutputs() {
-    return _values;
+    return _activatedValues;
 }
 
 
