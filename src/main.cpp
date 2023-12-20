@@ -1,15 +1,17 @@
 #include <iostream>
-#include "containers.hpp"
-#include "layer.hpp"
-#define SIZE 50000000
+#include <vector>
+#include "containers/tensor.hpp"
 
-using namespace std::chrono;
+
 
 
 int main() {
-    Vector v(100);
-
-
-
+    Tensor<2> t({100, 3});
+    std::vector<float> v(300, 3);
+    t.assign(v.begin(), v.end());
+    for (auto val : t) {
+        std::cout <<val << ' ';
+    }
+    std::cout << std::endl;
     return 0;
 }

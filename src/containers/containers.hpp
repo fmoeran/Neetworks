@@ -7,6 +7,8 @@
 #include <vector>
 #include <memory>
 
+
+
 struct Vector;
 struct Matrix;
 
@@ -25,6 +27,7 @@ namespace operators
     void vecMatMul(const Vector& a, const Matrix& b, Vector& result);
     float dot(const Vector& a, const Vector& b);
 }
+
 
 struct Vector{
 public:
@@ -79,6 +82,11 @@ private:
     size_t _rows, _cols;
     std::unique_ptr<float[]> _data;
 };
+
+
+
+
+
 
 const Vector emptyVec(0);
 const Matrix emptyMat(0, 0);

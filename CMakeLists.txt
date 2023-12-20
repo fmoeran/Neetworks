@@ -10,6 +10,8 @@ endif()
 set(CMAKE_CXX_FLAGS_DEBUG "-g -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
-file(GLOB SOURCE_FILES src/*.hpp src/*.cpp)
+#file(GLOB SOURCE_FILES src/*.hpp src/*.cpp)
 
-add_executable(AI ${SOURCE_FILES})
+add_executable(AI src/main.cpp
+        src/containers/containers.hpp src/containers/containers.cpp
+        src/containers/tensor.hpp src/containers/tensor.tpp)
