@@ -1,9 +1,6 @@
-template<size_t RANK>
-template<typename InputIter>
-void Tensor<RANK>::assign(InputIter begin, InputIter end) {
-    assert(std::distance(begin, end) == size());
-    std::copy(begin, end, _data.get());
-}
+#pragma once
+
+
 
 
 template<size_t RANK>
@@ -42,16 +39,50 @@ size_t Tensor<RANK>::rank() const {
 }
 
 template<size_t RANK>
-std::ostream &operator<<(std::ostream &os, const Tensor<RANK> &t) {
-    os << "Tensor<" << std::to_string(t.rank()) << ">";
-    os << "{";
-    for (int d=0; d<t.rank(); d++) {
-        os << std::to_string(t.dimensions()[d]);
-        if (d != t.rank()-1) {
-            os << ", ";
-        }
-    }
-    os << "}";
-    return os;
-
+template<typename InputIter>
+void Tensor<RANK>::assign(InputIter begin, InputIter end) {
+    assert(std::distance(begin, end) == size());
+    std::copy(begin, end, _data.get());
 }
+
+template<size_t RANK>
+void Tensor<RANK>::operator+=(float scalar) {
+    operators::add(begin(), scalar, begin(), size());
+}
+
+template<size_t RANK>
+void Tensor<RANK>::operator+=(const Tensor<RANK>& tensor) {
+    assert(dimensions() == tensor.dimensions());
+    operators::add(begin(), tensor.begin(), begin(), size());
+}
+
+template<size_t RANK>
+void Tensor<RANK>::operator*=(float scalar) {
+    operators::mul(begin(), scalar, begin(), size());
+}
+
+
+template<size_t RANK>
+std::ostream &operator<<(std::ostream &os, const Tensor<RANK> &t) {
+    if constexpr(RANK == 1) {
+        for (int r=0; r<t.size(); r++) {
+            os << std::to_string(t.begin()[r]);
+            os << std::string(" ");
+        }
+        return os;
+    }else {
+        os << std::string("Tensor<") << std::to_string(t.rank()) << std::string(">");
+        os << std::string("{");
+        for (int d = 0; d < t.rank(); d++) {
+            os << std::to_string(t.dimensions()[d]);
+            if (d != t.rank() - 1) {
+                os << std::string(", ");
+            }
+        }
+        os << std::string("}");
+        return os;
+    }
+}
+
+
+

@@ -1,6 +1,8 @@
 //
 // Created by Felix Moeran on 20/12/2023.
 //
+#pragma once
+
 
 #include <memory>
 #include <iterator>
@@ -10,8 +12,17 @@
 #include <array>
 #include <initializer_list>
 
+
+namespace operators
+{
+    void add(const float* a, const float* b, float* result, size_t size);
+    void add(const float* a, float b, float* result, size_t size);
+    void mul(const float* a, float b, float* result, size_t size);
+}
+
+
 // A multidimensional array.
-// e.g. a Tensor with _rank 1 is a vector, and _rank 2 is a matrix
+// e.g. a Tensor with _rank 1 is a vector, and _rank 2 is a matrix, etc...
 template<size_t RANK>
 struct Tensor {
 public:
@@ -29,7 +40,12 @@ public:
     template<typename InputIter>
     void assign(InputIter begin, InputIter end);
 
-    size_t rank() const;
+    [[nodiscard]] size_t rank() const;
+
+    void operator+=(float scalar);
+    void operator+=(const Tensor<RANK>& tensor);
+
+    void operator *=(float scalar);
 private:
     std::unique_ptr<float[]> _data;
     size_t _dimensions[RANK], _size;
