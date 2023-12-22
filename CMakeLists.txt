@@ -14,4 +14,5 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 add_executable(AI src/main.cpp
         src/containers/tensor.hpp src/containers/tensor.tpp
-        src/containers/vector.hpp src/containers/vector.cpp src/containers/tensor.cpp)
+        src/containers/vector.hpp src/containers/vector.cpp
+        src/containers/tensor.cpp src/containers/matrix.cpp)

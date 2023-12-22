@@ -3,6 +3,8 @@
 //
 #include "vector.hpp"
 #include "tensor.hpp"
+#include "matrix.hpp"
+
 
 namespace operators
 {
@@ -47,6 +49,7 @@ void Vector::operator+=(float scalar) {
 }
 
 void Vector::operator+=(const Vector& vector) {
+    assert(size() == vector.size());
     operators::add(begin(), vector.begin(), begin(), size());
 }
 
@@ -58,4 +61,10 @@ float Vector::dot(const Vector &vector) {
     assert(size() == vector.size());
     return operators::dot(begin(), vector.begin(), size());
 }
+
+float &Vector::operator[](size_t ind) const{
+    assert(ind < size());
+    return *(begin() + ind);
+}
+
 

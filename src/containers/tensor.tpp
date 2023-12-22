@@ -64,13 +64,25 @@ void Tensor<RANK>::operator*=(float scalar) {
 
 template<size_t RANK>
 std::ostream &operator<<(std::ostream &os, const Tensor<RANK> &t) {
-    if constexpr(RANK == 1) {
+    if constexpr(RANK == 1) { // VECTOR
+
         for (int r=0; r<t.size(); r++) {
             os << std::to_string(t.begin()[r]);
             os << std::string(" ");
         }
         return os;
-    }else {
+    }
+    else if constexpr(RANK == 2) { // MATRIX
+        for (int r=0; r<t.dimensions()[0]; r++) {
+            for (int c=0; c<t.dimensions()[1]; c++) {
+                os << std::to_string(*(t.begin() + r * t.dimensions()[1] + c));
+                os << std::string(" ");
+            }
+            os << std::string("\n");
+        }
+        return os;
+    }
+    else { // 3 onwards Tensor
         os << std::string("Tensor<") << std::to_string(t.rank()) << std::string(">");
         os << std::string("{");
         for (int d = 0; d < t.rank(); d++) {

@@ -5,24 +5,32 @@
 #pragma once
 
 #include "tensor.hpp"
+#include "vector.hpp"
 
-// Wrapper for a rank 1 tensor
-using Vector = Tensor<1>;
+
+// Wrapper for a rank 2 tensor
+using Matrix = Tensor<2>;
+
 
 namespace operators
 {
-    float dot(const float* a, const float* b, size_t size);
+    void vecMatMul(const Matrix&a, const Vector& b, Vector& result);
+    void vecMatMul(const Vector& a, const Matrix& b, Vector& result);
 }
 
+
 template<>
-struct Tensor<1> {
+struct Tensor<2> {
 public:
-    explicit Tensor(size_t size);
+    Tensor(size_t rows, size_t cols);
 
     // returns the number of floats stored by the Vector
     [[nodiscard]] size_t size() const;
 
-    [[nodiscard]] std::array<size_t, 1> dimensions() const;
+    [[nodiscard]] std::array<size_t, 2> dimensions() const;
+
+    [[nodiscard]] size_t rows() const;
+    [[nodiscard]] size_t cols() const;
 
     // returns the array pointer to the first item in the vector
     [[nodiscard]] float* begin() const;
@@ -34,36 +42,19 @@ public:
     [[nodiscard]] static size_t rank();
 
     void operator+=(float scalar);
-    void operator+=(const Vector& vector);
+    void operator+=(const Matrix& matrix);
 
     void operator*=(float scalar);
 
-    float dot(const Vector& vector);
-
-    float& operator[](size_t ind) const;
+    float* operator[](size_t row) const;
 
 private:
-    size_t _size;
+    size_t _size, _rows, _cols;
     std::unique_ptr<float[]> _data;
-
 };
 
-
-// This has to be defined here due to templates being instanced only when they are needed
-// and it is the only template defined function
-
-
 template<typename InputIter>
-void Vector::assign(InputIter begin, InputIter end) {
+void Matrix::assign(InputIter begin, InputIter end) {
     assert(std::distance(begin, end) == size());
     std::copy(begin, end, _data.get());
 }
-
-
-
-
-
-
-
-
-

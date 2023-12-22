@@ -109,6 +109,7 @@ void Vector::operator=(std::vector<float> vec) {
 }
 
 std::ostream &operator<<(std::ostream &os, const Vector &v) {
+
     for (int r=0; r<v.size(); r++) {
         os << v.begin()[r];
         os << std::string(" ");
