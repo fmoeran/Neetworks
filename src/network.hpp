@@ -7,18 +7,20 @@
 #include "layer.hpp"
 #include <vector>
 
+namespace nw
+{
 
-struct Network {
-public:
-    Network(size_t inputSize);
+    struct Network {
+    public:
+        Network(size_t inputSize);
 
-    void addLayer(__Layer* layer);
+        void addLayer(__Layer *layer);
 
-private:
-    std::vector<__Layer*> layers;
+    private:
+        std::vector<__Layer *> layers;
 
 
-};
-
+    };
+}
 
 

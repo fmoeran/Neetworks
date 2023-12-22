@@ -4,24 +4,26 @@
 
 #include <string>
 
-namespace operators
+namespace nw
 {
-    void add(const float *a, const float *b, float *result, size_t size) {
-        for (int i=0; i<size; i++) {
-            result[i] = a[i] + b[i];
+    namespace operators {
+        void add(const float *a, const float *b, float *result, size_t size) {
+            for (int i = 0; i < size; i++) {
+                result[i] = a[i] + b[i];
+            }
         }
-    }
 
-    void add(const float *a, float b, float *result, size_t size) {
-        for (int i=0; i<size; i++) {
-            result[i] = a[i] + b;
+        void add(const float *a, float b, float *result, size_t size) {
+            for (int i = 0; i < size; i++) {
+                result[i] = a[i] + b;
+            }
         }
-    }
 
 
-    void mul(const float *a, float b, float *result, size_t size) {
-        for (int i=0; i<size; i++) {
-            result[i] = a[i] * b;
+        void mul(const float *a, float b, float *result, size_t size) {
+            for (int i = 0; i < size; i++) {
+                result[i] = a[i] * b;
+            }
         }
     }
 }

@@ -3,3 +3,10 @@
 //
 
 #include "network.hpp"
+
+
+
+namespace nw
+{
+
+}
