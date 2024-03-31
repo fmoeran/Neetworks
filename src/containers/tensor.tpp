@@ -157,12 +157,23 @@ namespace nw
         return _end;
     }
 
+    size_t FlatIterator::size() {
+        return std::distance(_begin, _end);
+    }
+
+    float& FlatIterator::operator[](size_t ind) {
+        assert(ind < size());
+        return begin()[ind];
+    }
+
     template<size_t RANK>
     float Tensor<RANK>::dot(const Tensor<RANK>& other){
         assert(size() == other.size());
         return operators::dot(_iterator.begin(), _iterator.end(), size());
 
     }
+
+
 }
 
 

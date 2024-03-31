@@ -24,6 +24,10 @@ namespace nw {
         float* begin();
 
         float* end();
+
+        size_t size();
+
+        float& operator[](size_t ind);
     private:
         float *_begin, *_end;
     };

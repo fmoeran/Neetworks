@@ -8,10 +8,10 @@
 
 namespace nw
 {
-    void Sigmoid::apply(const Vector &vec, Vector &res) {
-        assert(vec.size() == res.size());
-        for (int i = 0; i < vec.size(); i++) {
-            res[i] = apply(vec[i]);
+    void Sigmoid::apply(FlatIterator it, FlatIterator res) {
+        assert(it.size() == res.size());
+        for (int i = 0; i < it.size(); i++) {
+            res[i] = apply(it[i]);
         }
     }
 
@@ -19,10 +19,10 @@ namespace nw
         return 1.0f / (1 + std::exp(-z));
     }
 
-    void Sigmoid::applyDeriv(const Vector &vec, Vector &res) {
-        assert(vec.size() == res.size());
-        for (int i = 0; i < vec.size(); i++) {
-            res[i] = applyDeriv(vec[i]);
+    void Sigmoid::applyDeriv(FlatIterator it, FlatIterator res) {
+        assert(it.size() == res.size());
+        for (int i = 0; i < it.size(); i++) {
+            res[i] = applyDeriv(it[i]);
         }
     }
 

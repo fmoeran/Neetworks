@@ -8,12 +8,12 @@
 
 namespace nw
 {
-    InputLayer::InputLayer(size_t size) : _size(size), _values(size) {}
+    InputLayer::InputLayer(size_t size) : _size(size), _values({size}) {}
 
     void InputLayer::propagate() {}
 
-    const Vector &InputLayer::getOutputs() {
-        return _values;
+    const FlatIterator InputLayer::getOutputs() {
+        return _values.getFlatIterator();
     }
 
     size_t InputLayer::size() const {
@@ -22,7 +22,8 @@ namespace nw
 
 
     DenseLayer::DenseLayer(size_t size, __Layer *prev, __Activation *activation)
-            : _size(size), _biases(size), _values(size), _activatedValues(size), _weights(size, prev->size()) {
+            : _size(size), _biases({size}), _values({size}),
+            _activatedValues({size}), _weights({size, prev->size()}) {
         _previous = prev;
         _activation = activation;
 
@@ -30,10 +31,10 @@ namespace nw
         std::default_random_engine generator{rd()};
         std::normal_distribution<float> distribution;
 
-        for (int i = 0; i < this->size(); i++) {
-            _biases[i] = distribution(generator);
-            for (int j = 0; j < _previous->size(); j++) {
-                _weights[i][j] = distribution(generator);
+        for (size_t i = 0; i < this->size(); i++) {
+            _biases.get({i}) = distribution(generator);
+            for (size_t j = 0; j < _previous->size(); j++) {
+                _weights.get({i, j}) = distribution(generator);
             }
         }
 
@@ -47,8 +48,8 @@ namespace nw
         return _size;
     }
 
-    const Vector &DenseLayer::getOutputs() {
-        return _activatedValues;
+    const FlatIterator DenseLayer::getOutputs() {
+        return _activatedValues.getFlatIterator();
     }
 }
 
