@@ -20,6 +20,11 @@ namespace nw
         return _size;
     }
 
+    template<typename It>
+    void InputLayer::loadInputs(It begin, It end) {
+        _values.assign(begin, end);
+    }
+
 
     DenseLayer::DenseLayer(size_t size, __Layer *prev, __Activation *activation)
             : _size(size), _biases({size}), _values({size}),

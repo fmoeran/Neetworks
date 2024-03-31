@@ -21,8 +21,6 @@ namespace nw
         // Returns the size of the output vector of the layer
         [[nodiscard]] virtual size_t size() const { return 0; };
 
-        //virtual void backpropagate() {};
-
     protected:
         /// non-linear activation function
         __Activation *_activation;
@@ -36,6 +34,9 @@ namespace nw
         explicit InputLayer(size_t size);
 
         void propagate() override;
+
+        template<typename InputIter>
+        void loadInputs(InputIter begin, InputIter end);
 
         const FlatIterator getOutputs() override;
 
