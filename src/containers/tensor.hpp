@@ -14,36 +14,39 @@
 
 
 namespace nw {
-    namespace operators {
-        void add(const float *a, const float *b, float *result, size_t size);
 
-        void add(const float *a, float b, float *result, size_t size);
+    /// Iterator class used to iterate over all of the items in a Tensor
+    struct FlatIterator {
+    public:
+        FlatIterator();
+        FlatIterator(float* pBegin, float* pEnd);
 
-        void mul(const float *a, float b, float *result, size_t size);
-    }
+        float* begin();
 
-
-    // A multidimensional array.
-    // e.g. a Tensor with _rank 1 is a vector, and _rank 2 is a matrix, etc...
+        float* end();
+    private:
+        float *_begin, *_end;
+    };
+    /// A multidimensional array.
+    /// e.g. a Tensor with RANK 1 is a vector, and RANK 2 is a matrix, etc...
+    /// \tparam RANK No. of dimensions in the Tensor.
     template<size_t RANK>
     struct Tensor {
     public:
         Tensor(std::initializer_list<size_t> dimensions);
 
-        // returns the number of floats stored by the tensor
+        /// Returns the number of floats stored by the tensor
         [[nodiscard]] size_t size() const;
 
+        /// Returns the size of each dimension as given in the constructor
         [[nodiscard]] std::array<size_t, RANK> dimensions() const;
 
-        // returns the array pointer to the first item in the vector
-        [[nodiscard]] float *begin() const;
+        float& get(std::initializer_list<size_t> pos);
 
-        [[nodiscard]] float *end() const;
+        FlatIterator getFlatIterator();
 
         template<typename InputIter>
         void assign(InputIter begin, InputIter end);
-
-        [[nodiscard]] size_t rank() const;
 
         void operator+=(float scalar);
 
@@ -51,10 +54,27 @@ namespace nw {
 
         void operator*=(float scalar);
 
+        float dot(const Tensor<RANK>& other);
+
     private:
         std::unique_ptr<float[]> _data;
         size_t _dimensions[RANK], _size;
+        FlatIterator _iterator;
     };
+
+
+    namespace operators {
+        void add(const float *a, const float *b, float *result, size_t size);
+
+        void add(const float *a, float b, float *result, size_t size);
+
+        void mul(const float *a, float b, float *result, size_t size);
+
+        float dot(const float *a, const float *b, size_t size);
+
+        void vecMatMul(Tensor<2> &m, Tensor<1> &v, Tensor<1> &result);
+    }
+
 }
 
 #include "tensor.tpp"

@@ -8,7 +8,7 @@
 
 namespace nw
 {
-    InputLayer::InputLayer(size_t size) : _values(size), _size(size) {}
+    InputLayer::InputLayer(size_t size) : _size(size), _values(size) {}
 
     void InputLayer::propagate() {}
 
@@ -22,7 +22,7 @@ namespace nw
 
 
     DenseLayer::DenseLayer(size_t size, __Layer *prev, __Activation *activation)
-            : _size(size), _values(size), _weights(size, prev->size()), _biases(size), _activatedValues(size) {
+            : _size(size), _biases(size), _values(size), _activatedValues(size), _weights(size, prev->size()) {
         _previous = prev;
         _activation = activation;
 
