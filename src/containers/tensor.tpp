@@ -71,7 +71,7 @@ namespace nw
     float &Tensor<RANK>::get(std::initializer_list<size_t> pos) {
         assert(pos.size() == RANK);
         size_t index = 0;
-        for (int i=RANK-1, step=1; step+=dimensions()[i], i--; i>=0){
+        for (int i=RANK-1, step=1; i>=0; step+=dimensions()[i], i--;){
             index += step * pos.begin()[i];
         }
         return _data[index];
