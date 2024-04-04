@@ -4,9 +4,9 @@
 
 
 int main() {
-    using namespace nw;
 
-    Tensor<2> mat({3, 3});
+    std::cout << "h" << std::endl;
+
 
     return 0;
 }

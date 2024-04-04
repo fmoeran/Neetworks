@@ -12,7 +12,7 @@ namespace nw
 
     void InputLayer::propagate() {}
 
-    const FlatIterator InputLayer::getOutputs() {
+    FlatIterator InputLayer::getOutputs() {
         return _values.getFlatIterator();
     }
 
@@ -46,14 +46,16 @@ namespace nw
     }
 
     void DenseLayer::propagate() {
-
+        operators::vecMatMul(_weights.getFlatIterator(), _previous->getOutputs(), _values.getFlatIterator());
+        _values += _biases;
+        _activation->apply(_values.getFlatIterator(), _activatedValues.getFlatIterator());
     }
 
     size_t DenseLayer::size() const {
         return _size;
     }
 
-    const FlatIterator DenseLayer::getOutputs() {
+    FlatIterator DenseLayer::getOutputs() {
         return _activatedValues.getFlatIterator();
     }
 }

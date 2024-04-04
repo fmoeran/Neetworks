@@ -54,7 +54,7 @@ namespace nw {
 
         void operator+=(float scalar);
 
-        void operator+=(const Tensor<RANK> &tensor);
+        void operator+=(Tensor<RANK> &tensor);
 
         void operator*=(float scalar);
 
@@ -76,7 +76,19 @@ namespace nw {
 
         float dot(const float *a, const float *b, size_t size);
 
-        void vecMatMul(Tensor<2> &m, Tensor<1> &v, Tensor<1> &result);
+        /// multiplies a matrix by a vector.
+        /// \param m matrix pointer
+        /// \param v vector pointer
+        /// \param result result vector pointer
+        /// \param matWidth number of columns in m, size of v
+        /// \param matHeight number of rows in m, size result
+        void vecMatMul(float* m, float *v, float *result, size_t matWidth, size_t matHeight);
+
+        /// multiplies a matrix by a vector.
+        /// \param m matrix iterator
+        /// \param v vector iterator
+        /// \param result result vector iterator
+        void vecMatMul(FlatIterator m, FlatIterator v, FlatIterator result);
     }
 
 }

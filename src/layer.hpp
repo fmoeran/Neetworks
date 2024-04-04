@@ -16,7 +16,7 @@ namespace nw
         virtual void propagate() {};
 
         /// Retrieves a Tensor iterator of values that the layer has produced AFTER a propagate() call
-        virtual const FlatIterator getOutputs() { return FlatIterator(); };
+        virtual FlatIterator getOutputs() { return FlatIterator(); };
 
         // Returns the size of the output vector of the layer
         [[nodiscard]] virtual size_t size() const { return 0; };
@@ -28,7 +28,7 @@ namespace nw
         __Layer *_previous;
     };
 
-// A layer that will always be at the start of any network
+/// A layer that will always be at the start of any network
     struct InputLayer : public __Layer {
     public:
         explicit InputLayer(size_t size);
@@ -38,7 +38,7 @@ namespace nw
         template<typename InputIter>
         void loadInputs(InputIter begin, InputIter end);
 
-        const FlatIterator getOutputs() override;
+        FlatIterator getOutputs() override;
 
         [[nodiscard]] size_t size() const override;
 
@@ -48,14 +48,14 @@ namespace nw
     };
 
 
-// The basic NN layer, edges between every node and every previous layer node, with weights biases and an activation function
+/// The basic NN layer, edges between every node and every previous layer node, with weights, biases and an activation function
     struct DenseLayer : public __Layer {
     public:
         explicit DenseLayer(size_t size, __Layer *prev, __Activation *activation);
 
         void propagate() override;
 
-        const FlatIterator getOutputs() override;
+        FlatIterator getOutputs() override;
 
         [[nodiscard]] size_t size() const override;
 

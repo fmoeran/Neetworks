@@ -2,47 +2,6 @@
 
 namespace nw
 {
-    namespace operators {
-        void add(const float *a, const float *b, float *result, size_t size) {
-            for (int i = 0; i < size; i++) {
-                result[i] = a[i] + b[i];
-            }
-        }
-
-        void add(const float *a, float b, float *result, size_t size) {
-            for (int i = 0; i < size; i++) {
-                result[i] = a[i] + b;
-            }
-        }
-
-
-        void mul(const float *a, float b, float *result, size_t size) {
-            for (int i = 0; i < size; i++) {
-                result[i] = a[i] * b;
-            }
-        }
-
-        float dot(const float *a, const float *b, size_t size) {
-            float out = 0;
-            for (int i = 0; i < size; i++) {
-                out += a[i] * b[i];
-            }
-            return out;
-        }
-
-        void vecMatMul(Tensor<2> &m, Tensor<1> &v, Tensor<1> &result) {
-            assert(&v != &result);
-            assert(m.dimensions()[1] == v.size() && m.dimensions()[0] == result.size());
-            std::memset(result.getFlatIterator().begin(), 0, result.size() * sizeof(float));
-
-            for (size_t row = 0; row < result.size(); row++) {
-                for (size_t col = 0; col < v.size(); col++) {
-                    result.get({row}) += m.get({row, col}) * v.get({col});
-                }
-            }
-
-        }
-    }
     template<size_t RANK>
     Tensor<RANK>::Tensor(std::initializer_list<size_t> dimensions){
         assert(dimensions.size() == RANK);
@@ -71,7 +30,7 @@ namespace nw
     float &Tensor<RANK>::get(std::initializer_list<size_t> pos) {
         assert(pos.size() == RANK);
         size_t index = 0;
-        for (int i=RANK-1, step=1; i>=0; step+=dimensions()[i], i--;){
+        for (int i=RANK-1, step=1; i>=0; step+=dimensions()[i], i--){
             index += step * pos.begin()[i];
         }
         return _data[index];
@@ -90,9 +49,9 @@ namespace nw
     }
 
     template<size_t RANK>
-    void Tensor<RANK>::operator+=(const Tensor <RANK> &tensor) {
+    void Tensor<RANK>::operator+=(Tensor <RANK> &tensor) {
         assert(dimensions() == tensor.dimensions());
-        operators::add(_iterator.begin(), tensor.begin(), _iterator.begin(), size());
+        operators::add(_iterator.begin(), tensor.getFlatIterator().begin(), _iterator.begin(), size());
     }
 
     template<size_t RANK>
@@ -136,34 +95,6 @@ namespace nw
     template<size_t RANK>
     FlatIterator Tensor<RANK>::getFlatIterator() {
         return _iterator;
-    }
-
-    FlatIterator::FlatIterator() {
-        _begin = nullptr;
-        _end = nullptr;
-    }
-
-   FlatIterator::FlatIterator(float* pBegin, float* pEnd) {
-        _begin = pBegin;
-        _end = pEnd;
-    }
-
-    float *FlatIterator::begin() {
-        return _begin;
-    }
-
-
-    float *FlatIterator::end() {
-        return _end;
-    }
-
-    size_t FlatIterator::size() {
-        return std::distance(_begin, _end);
-    }
-
-    float& FlatIterator::operator[](size_t ind) {
-        assert(ind < size());
-        return begin()[ind];
     }
 
     template<size_t RANK>

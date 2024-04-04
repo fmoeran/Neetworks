@@ -13,5 +13,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 #file(GLOB SOURCE_FILES src/*.hpp src/*.cpp)
 
 add_executable(AI src/main.cpp
-        src/containers/tensor.hpp src/containers/tensor.tpp src/layer.hpp src/activation.hpp src/activation.cpp src/layer.cpp)
+        src/containers/tensor.hpp src/containers/tensor.tpp
+        src/activation.hpp src/activation.cpp
+        src/layer.hpp src/layer.cpp
+        src/dataHandler.cpp src/dataHandler.hpp src/containers/tensor.cpp)
 
