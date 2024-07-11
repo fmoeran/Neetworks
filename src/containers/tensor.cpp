@@ -1,6 +1,7 @@
 //
 // Created by Felix Moeran on 04/04/2024.
 //
+#include <cstring>
 #include "tensor.hpp"
 
 namespace nw
@@ -19,7 +20,6 @@ namespace nw
                 result[i] = a[i] + b;
             }
         }
-
 
         void mul(const float *a, float b, float *result, size_t size) {
             for (int i = 0; i < size; i++) {

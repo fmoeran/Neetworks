@@ -21,14 +21,6 @@ namespace nw {
         virtual float applyDeriv(float z) { return 0; };
     };
 
-    class Sigmoid : public __Activation {
-    public:
-        void apply(FlatIterator it, FlatIterator res) override;
 
-        float apply(float z) override;
 
-        void applyDeriv(FlatIterator it, FlatIterator res) override;
-
-        float applyDeriv(float z) override;
-    };
 }

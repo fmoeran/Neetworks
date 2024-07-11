@@ -1,8 +1,7 @@
 //
-// Created by Felix Moeran on 17/12/2023.
+// Created by felix on 11/07/2024.
 //
-
-#include "activation.hpp"
+#include "sigmoid.hpp"
 #include <cmath>
 #include <cassert>
 
