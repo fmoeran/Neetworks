@@ -11,6 +11,7 @@ namespace nw
     public:
         explicit DenseLayer(size_t size, __Layer *prev, __Activation *activation);
 
+
         void propagate() override;
 
         FlatIterator getOutputs() override;

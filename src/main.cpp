@@ -13,6 +13,7 @@ int main() {
 //    DenseLayer dl(5, &il, new Sigmoid);
 
     Network net(5);
+    net.addLayer(new DenseLayer(5, ))
 
     std::cout << "i" << std::endl;
     return 0;
