@@ -17,7 +17,7 @@ namespace nw
         void addLayer(__Layer *layer);
 
     private:
-        std::vector<__Layer *> layers;
+        std::vector<__Layer *> _layers;
 
 
     };

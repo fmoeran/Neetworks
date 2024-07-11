@@ -20,5 +20,6 @@ add_executable(AI src/main.cpp
         src/activations/sigmoid.hpp src/activations/sigmoid.cpp
         src/layers/denseLayer.hpp src/layers/denseLayer.cpp
         src/layers/inputLayer.hpp src/layers/inputLayer.cpp
+        src/network.hpp src/network.cpp
         )
 
