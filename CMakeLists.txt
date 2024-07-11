@@ -18,5 +18,7 @@ add_executable(AI src/main.cpp
         src/layer.hpp src/layer.cpp
         src/dataHandler.cpp src/dataHandler.hpp src/containers/tensor.cpp
         src/activations/sigmoid.hpp src/activations/sigmoid.cpp
+        src/layers/denseLayer.hpp src/layers/denseLayer.cpp
+        src/layers/inputLayer.hpp src/layers/inputLayer.cpp
         )
 
