@@ -30,6 +30,8 @@ namespace nw {
         float& operator[](size_t ind);
     private:
         float *_begin, *_end;
+
+        friend std::ostream &operator<<(std::ostream &os, FlatIterator iter);
     };
     /// A multidimensional array.
     /// e.g. a Tensor with RANK 1 is a vector, and RANK 2 is a matrix, etc...
@@ -90,7 +92,7 @@ namespace nw {
         /// \param result result vector iterator
         void vecMatMul(FlatIterator m, FlatIterator v, FlatIterator result);
     }
-
 }
+
 
 #include "tensor.tpp"

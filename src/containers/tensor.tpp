@@ -40,7 +40,7 @@ namespace nw
     template<size_t RANK>
     template<typename InputIter>
     void Tensor<RANK>::assign(InputIter begin, InputIter end) {
-        assert(std::distance(begin, end) == size());
+        assert((size_t)std::distance(begin, end) == size());
         std::copy(begin, end, _data.get());
     }
 
@@ -69,7 +69,6 @@ namespace nw
                 os << std::to_string(t.getFlatIterator().begin()[r]);
                 os << std::string(" ");
             }
-            return os;
         } else if constexpr (RANK == 2) { // MATRIX
             for (int r = 0; r < t.dimensions()[0]; r++) {
                 for (int c = 0; c < t.dimensions()[1]; c++) {
@@ -78,7 +77,6 @@ namespace nw
                 }
                 os << std::string("\n");
             }
-            return os;
         } else { // 3 onwards Tensor
             os << std::string("Tensor<") << std::to_string(t.rank()) << std::string(">");
             os << std::string("{");
@@ -89,9 +87,10 @@ namespace nw
                 }
             }
             os << std::string("}");
-            return os;
         }
+        return os;
     }
+
 
     template<size_t RANK>
     FlatIterator Tensor<RANK>::getFlatIterator() {

@@ -10,26 +10,26 @@ namespace nw
 
     namespace operators {
         void add(const float *a, const float *b, float *result, size_t size) {
-            for (int i = 0; i < size; i++) {
+            for (size_t i = 0; i < size; i++) {
                 result[i] = a[i] + b[i];
             }
         }
 
         void add(const float *a, float b, float *result, size_t size) {
-            for (int i = 0; i < size; i++) {
+            for (size_t i = 0; i < size; i++) {
                 result[i] = a[i] + b;
             }
         }
 
         void mul(const float *a, float b, float *result, size_t size) {
-            for (int i = 0; i < size; i++) {
+            for (size_t i = 0; i < size; i++) {
                 result[i] = a[i] * b;
             }
         }
 
         float dot(const float *a, const float *b, size_t size) {
             float out = 0;
-            for (int i = 0; i < size; i++) {
+            for (size_t i = 0; i < size; i++) {
                 out += a[i] * b[i];
             }
             return out;
@@ -83,4 +83,11 @@ namespace nw
         return begin()[ind];
     }
 
+    std::ostream &operator<<(std::ostream &os, FlatIterator iter) {
+        for (float val : iter) {
+            os << val << ' ';
+        }
+        return os;
     }
+
+}

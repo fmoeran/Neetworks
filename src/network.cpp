@@ -13,7 +13,7 @@ namespace nw
     }
 
     void Network::addLayer(__Layer *layer) {
-//        _layers.push_back(layer);
+        _layers.push_back(layer);
     }
 
     void Network::feedForward(FlatIterator inputIterator) {
@@ -34,4 +34,14 @@ namespace nw
         return _inputLayerPtr->getOutputs();
     }
 
+    InputLayer *Network::inputLayer() {
+        return _inputLayerPtr;
+    }
+
+    std::ostream &operator<<(std::ostream &os, Network &n) {
+        for (auto layer : n._layers) {
+            os << layer->getOutputs() << '\n';
+        }
+        return os;
+    }
 }

@@ -26,6 +26,9 @@ namespace nw
         /// Often used to assign a new layer after this one
         __Layer* lastLayer();
 
+        /// Pointer to the input layer, will
+        InputLayer* inputLayer();
+
         /// Returns the output tensor from the final layer in the network
         FlatIterator getOutput();
 
@@ -36,7 +39,12 @@ namespace nw
         std::vector<__Layer *> _layers;
         InputLayer *_inputLayerPtr;
 
+        friend std::ostream &operator<<(std::ostream &os, Network &n);
     };
+
 }
+
+
+
 
 
