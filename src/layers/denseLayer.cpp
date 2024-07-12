@@ -21,7 +21,7 @@ namespace nw
         for (size_t i = 0; i < this->size(); i++) {
             _biases.get({i}) = distribution(generator);
             for (size_t j = 0; j < _previous->size(); j++) {
-                _weights.get({i, j}) = distribution(generator);
+                _weights.get({i, j}) = 1.0f;
             }
         }
 

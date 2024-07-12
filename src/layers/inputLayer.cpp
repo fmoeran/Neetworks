@@ -17,11 +17,4 @@ namespace nw
     size_t InputLayer::size() const {
         return _size;
     }
-
-    template<typename It>
-    void InputLayer::loadInputs(It begin, It end) {
-        _values.assign(begin, end);
-    }
-
-
 }

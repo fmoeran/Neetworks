@@ -7,13 +7,12 @@
 
 int main() {
     using namespace nw;
-    std::cout << "h";
-
-
-//    DenseLayer dl(5, &il, new Sigmoid);
+    std::cout << "h" << std::endl;
 
     Network net(5);
-    net.addLayer(new DenseLayer(5, ))
+    Sigmoid sig;
+    DenseLayer dl(5, net.lastLayer(), &sig);
+//    net.addLayer(&dl);
 
     std::cout << "i" << std::endl;
     return 0;

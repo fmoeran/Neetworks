@@ -3,24 +3,35 @@
 //
 
 #include "network.hpp"
-
+#include <iostream>
 
 namespace nw
 {
     Network::Network(size_t inputSize) {
         _inputLayerPtr = new InputLayer(inputSize);
         _layers.push_back(_inputLayerPtr);
-
     }
 
     void Network::addLayer(__Layer *layer) {
-        _layers.push_back(layer);
+//        _layers.push_back(layer);
     }
 
-    void Network::feedForward(FlatIterator iterator) {
-        _inputLayerPtr->loadInputs(iterator.begin(), iterator.end());
+    void Network::feedForward(FlatIterator inputIterator) {
+        _inputLayerPtr->loadInputs(inputIterator.begin(), inputIterator.end());
         for (__Layer* layer : _layers) {
             layer->propagate();
         }
     }
+
+    __Layer *Network::lastLayer() {
+        return _layers.back();
+    }
+    FlatIterator Network::getOutput() {
+        return lastLayer()->getOutputs();
+    }
+
+    FlatIterator Network::getInput() {
+        return _inputLayerPtr->getOutputs();
+    }
+
 }

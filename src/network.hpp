@@ -20,10 +20,17 @@ namespace nw
         void addLayer(__Layer *layer);
 
         /// Runs the NN, updating the values stored in each layer
-        void feedForward(FlatIterator iterator);
+        void feedForward(FlatIterator inputIterator);
+
+        /// Pointer to the final layer in the network
+        /// Often used to assign a new layer after this one
+        __Layer* lastLayer();
 
         /// Returns the output tensor from the final layer in the network
         FlatIterator getOutput();
+
+        /// Returns the input tensor most recently used by the network
+        FlatIterator getInput();
 
     private:
         std::vector<__Layer *> _layers;

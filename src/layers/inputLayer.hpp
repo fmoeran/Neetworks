@@ -3,7 +3,7 @@
 //
 
 #pragma once
-#include "../layer.cpp"
+#include "../layer.hpp"
 
 namespace nw
 {
@@ -25,5 +25,11 @@ namespace nw
         size_t _size;
         Tensor<1> _values;
     };
+
+    template<typename It>
+    void InputLayer::loadInputs(It begin, It end) {
+        _values.assign(begin, end);
+    }
+
 }
 

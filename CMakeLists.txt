@@ -15,7 +15,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 add_executable(AI src/main.cpp
         src/containers/tensor.hpp src/containers/tensor.tpp
         src/activation.hpp
-        src/layer.hpp src/layer.cpp
+        src/layer.hpp
         src/dataHandler.cpp src/dataHandler.hpp src/containers/tensor.cpp
         src/activations/sigmoid.hpp src/activations/sigmoid.cpp
         src/layers/denseLayer.hpp src/layers/denseLayer.cpp
