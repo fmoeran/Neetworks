@@ -68,5 +68,25 @@ namespace nw
         return prevLayerDerivatives.getFlatIterator();
     }
 
+    void DenseLayer::printWeightD(size_t N) {
+        for (float val : _weightDerivatives.getFlatIterator()) {
+            std::cout << val << ' ';
+        }
+        std::cout << std::endl;
+    }
+
+    void DenseLayer::resetDerivatives() {
+        std::fill(_weightDerivatives.getFlatIterator().begin(), _weightDerivatives.getFlatIterator().end(), 0.0);
+        std::fill(_biaseDerivatives.getFlatIterator().begin(), _biaseDerivatives.getFlatIterator().end(), 0.0);
+    }
+
+    void DenseLayer::update(size_t N, float rate) {
+        _weightDerivatives *= -rate / (float)N;
+        _biaseDerivatives *= -rate / (float)N;
+        _weights += _weightDerivatives;
+        _biaseDerivatives += _biaseDerivatives;
+        resetDerivatives();
+    }
+
 
 }

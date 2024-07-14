@@ -7,6 +7,7 @@
 #include "layer.hpp"
 #include "layers/inputLayer.hpp"
 #include "dataHandler.hpp"
+#include "cost.hpp"
 #include <vector>
 
 namespace nw
@@ -23,8 +24,15 @@ namespace nw
         /// Runs the NN, updating the values stored in each layer
         void feedForward(FlatIterator inputIterator);
 
+        void compile(__Cost* cost);
+
+
         /// TODO
         void train(Data trainingData, int epochs, int batchSize, bool track=true);
+
+
+        /// Returns the output that the network most favoured in the most recent pass
+        int getSingleOutput();
 
 
         /// Pointer to the final layer in the network
@@ -43,6 +51,10 @@ namespace nw
     private:
         std::vector<__Layer *> _layers;
         InputLayer *_inputLayerPtr;
+        __Cost* _cost;
+
+        // Current Epoch info
+        int _currentEpochCorrect;
 
         void _trainEpoch(Data trainingData, int batchSize);
         // Forward and Back propagates the data on the input, updating the gradients of layers
@@ -50,6 +62,11 @@ namespace nw
 
         void _backPropagate(FlatIterator target);
 
+        static void _printEpochProgressBar(float progress);
+
+        void _printEpochInfo(int currentEpoch, int trainingSize);
+
+        void updateNetworkParams(int batchSize);
 
         friend std::ostream &operator<<(std::ostream &os, Network &n);
     };

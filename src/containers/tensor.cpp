@@ -37,9 +37,8 @@ namespace nw
 
         void hadamard(FlatIterator a, FlatIterator b, FlatIterator result) {
             assert(a.size() == b.size() && b.size() == result.size());
-            float *ita=a.begin(), *itb=b.begin(), *itr=result.begin();
-            while (ita!=a.end()) {
-                *itr = (*ita)*(*itb);
+            for (int i=0; i<a.size(); i++) {
+                result[i] = a[i]*b[i];
             }
         }
 
@@ -74,11 +73,11 @@ namespace nw
 
         void vecMatTransposeMul(float* m, float *v, float *result, size_t matWidth, size_t matHeight) {
             assert(v != result && m != result);
-            std::memset((void *) result, 0, matHeight * sizeof(float));
+            std::memset((void *) result, 0, matWidth * sizeof(float));
 
             for (size_t col=0; col < matWidth; col++) {
                 for (size_t row=0; row < matHeight; row++) {
-                    result[col] += m[col * matHeight + row] * v[row];
+                    result[col] += m[row*matWidth + col] * v[row];
                 }
             }
         }

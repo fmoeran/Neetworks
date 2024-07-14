@@ -11,7 +11,6 @@ namespace nw
     public:
         explicit DenseLayer(size_t size, __Layer *prev, __Activation *activation);
 
-
         void propagate() override;
 
         FlatIterator getOutputs() override;
@@ -19,6 +18,12 @@ namespace nw
         FlatIterator backPropagate(FlatIterator outputDerivatives);
 
         [[nodiscard]] size_t size() const override;
+
+        void resetDerivatives() override;
+
+        void update(size_t N, float rate) override;
+
+        void printWeightD(size_t N) override;
 
     private:
         size_t _size;

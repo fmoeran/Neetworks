@@ -24,8 +24,17 @@ namespace nw
         /// \param outputDerivatives The derivative of cost with respect to the outputs of this layer in the last pass.
         virtual FlatIterator backPropagate(FlatIterator outputDerivatives) {return FlatIterator(); }
 
+        /// Resets all derivative values to 0, allowing backpropagation to begin altering them again.
+        /// This is used in Network::train.
+        virtual void resetDerivatives() {};
+
+
+        virtual void update(size_t N, float rate) {};
+
         // Returns the size of the output vector of the layer
         [[nodiscard]] virtual size_t size() const { return 0; };
+        /// TODO: delete this
+        virtual void printWeightD(size_t N) {};
 
     protected:
         /// non-linear activation function

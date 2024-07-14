@@ -6,8 +6,11 @@
 #include <iostream>
 #include <stdexcept>
 
+const int LOADING_BAR_WIDTH = 30;
+
 namespace nw
 {
+
     Network::Network(size_t inputSize) {
         _inputLayerPtr = new InputLayer(inputSize);
         _layers.push_back(_inputLayerPtr);
@@ -54,7 +57,9 @@ namespace nw
         // Run the epochs
         for (int currentEpoch = 0; currentEpoch < epochs; currentEpoch++) {
             trainingData.shuffle();
+            _currentEpochCorrect = 0;
             _trainEpoch(trainingData, batchSize);
+            _printEpochInfo(currentEpoch, trainingData.count);
         }
 
     }
@@ -63,18 +68,27 @@ namespace nw
         assert(trainingData.count % batchSize == 0);
         int batchCount = trainingData.count / batchSize;
         for (int currentBatch=0; currentBatch<batchCount; currentBatch++) {
-            std::cout << currentBatch << std::endl;
+            _printEpochProgressBar((float)currentBatch/(float)batchCount);
             int batchStart = currentBatch*batchSize;
             int batchEnd = batchStart + batchSize;
 
             for (int dataIndex=batchStart; dataIndex<batchEnd; dataIndex++) {
                 _trainSingle(trainingData.inputs[dataIndex], trainingData.targets[dataIndex]);
             }
+
+            updateNetworkParams(batchSize);
         }
+
     }
 
     void Network::_trainSingle(FlatIterator input, FlatIterator target) {
         feedForward(input);
+
+        if (getSingleOutput() == std::distance(target.begin(), std::max_element(target.begin(), target.end()))) {
+            _currentEpochCorrect++;
+        }
+
+        _backPropagate(target);
     }
 
     void Network::_backPropagate(FlatIterator target) {
@@ -82,8 +96,52 @@ namespace nw
             throw std::invalid_argument("Input is not the same size as the network's input.");
         }
 
-        
+        // Get derivative of last layer
+        Tensor<1> outputLayerDerivatives({getOutputLayer().size()});
+        _cost->applyDeriv(target, getOutput(), outputLayerDerivatives.getFlatIterator());
+        FlatIterator derivativeIterator = outputLayerDerivatives.getFlatIterator();
 
+        // Iterate backwards through layers
+        for (size_t layerIndex= _layers.size() - 1; layerIndex > 0; layerIndex--) {
+            derivativeIterator = _layers[layerIndex]->backPropagate(derivativeIterator);
+        }
+    }
 
+    void Network::compile(__Cost *cost) {
+        _cost = cost;
+    }
+
+    void Network::updateNetworkParams(int batchSize) {
+        for (auto layer : _layers) {
+            layer->update(batchSize, 0.1);
+        }
+    }
+
+    int Network::getSingleOutput() {
+        FlatIterator it = getOutput();
+        int max = 0;
+        for (int i=0; i<it.size(); i++) {
+            if (it[i] > it[max]) max = i;
+        }
+        return max;
+    }
+
+    void Network::_printEpochProgressBar(float progress) {
+        std::cout << "[";
+        int pos = (int) (LOADING_BAR_WIDTH * progress);
+        for (int i=0; i<LOADING_BAR_WIDTH; i++) {
+            if (i <= pos) std::cout << "=";
+            else std::cout << " ";
+        }
+        std::cout << "]" << int(progress * 100) << "%\r";
+        std::cout.flush();
+    }
+
+    void Network::_printEpochInfo(int currentEpoch, int trainingSize) {
+        // clear loading bar
+        for (int i=0; i<LOADING_BAR_WIDTH+10; i++) std::cout << ' ';
+        std::cout << '\r';
+        std::cout << "Epoch " << currentEpoch+1 << ": Training = " << _currentEpochCorrect << "/" << trainingSize;
+        std::cout << std::endl;
     }
 }

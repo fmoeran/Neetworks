@@ -17,6 +17,7 @@ struct Data {
     Data(std::vector<std::vector<float>>& inp, std::vector<std::vector<float>>& targ);
 
     void shuffle();
+
 };
 
 

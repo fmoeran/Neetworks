@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include "tensor.hpp"
+
 
 namespace nw
 {
@@ -41,7 +43,7 @@ namespace nw
     template<size_t RANK>
     template<typename InputIter>
     void Tensor<RANK>::assign(InputIter iter) {
-        assert((size_t)std::distance(iter.begin(), iter.end()) == size());
+        assert(iter.size() == size());
         std::copy(iter.begin(), iter.end(), _data.get());
     }
 
@@ -103,6 +105,7 @@ namespace nw
         return operators::dot(_iterator.begin(), _iterator.end(), size());
 
     }
+
 }
 
 
