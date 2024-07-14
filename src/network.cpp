@@ -17,7 +17,7 @@ namespace nw
     }
 
     void Network::feedForward(FlatIterator inputIterator) {
-        _inputLayerPtr->loadInputs(inputIterator.begin(), inputIterator.end());
+        _inputLayerPtr->loadInputs(inputIterator);
         for (__Layer* layer : _layers) {
             layer->propagate();
         }

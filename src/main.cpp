@@ -15,9 +15,9 @@ int main() {
     net.addLayer(&d1);
     net.addLayer(&d2);
 
-    std::vector<float> inputVec = {0, 0, 0, 0, 0};
+    std::vector<float> inputVec = {0, 1, -1, 0, 0};
     Tensor<1> input({5});
-    input.assign(inputVec.begin(), inputVec.end());
+    input.assign(inputVec);
 
     net.feedForward(input.getFlatIterator());
 

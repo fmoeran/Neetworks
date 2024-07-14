@@ -20,7 +20,6 @@ namespace nw {
     public:
         FlatIterator();
         FlatIterator(float* pBegin, float* pEnd);
-
         float* begin();
 
         float* end();
@@ -52,7 +51,7 @@ namespace nw {
         FlatIterator getFlatIterator();
 
         template<typename InputIter>
-        void assign(InputIter begin, InputIter end);
+        void assign(InputIter iter);
 
         void operator+=(float scalar);
 
@@ -64,7 +63,7 @@ namespace nw {
 
     private:
         std::unique_ptr<float[]> _data;
-        size_t _dimensions[RANK], _size;
+        size_t _dimensions[RANK]{}, _size;
         FlatIterator _iterator;
     };
 

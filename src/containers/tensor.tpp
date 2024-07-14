@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+
 namespace nw
 {
     template<size_t RANK>
@@ -39,9 +40,9 @@ namespace nw
 
     template<size_t RANK>
     template<typename InputIter>
-    void Tensor<RANK>::assign(InputIter begin, InputIter end) {
-        assert((size_t)std::distance(begin, end) == size());
-        std::copy(begin, end, _data.get());
+    void Tensor<RANK>::assign(InputIter iter) {
+        assert((size_t)std::distance(iter.begin(), iter.end()) == size());
+        std::copy(iter.begin(), iter.end(), _data.get());
     }
 
     template<size_t RANK>
@@ -91,7 +92,6 @@ namespace nw
         return os;
     }
 
-
     template<size_t RANK>
     FlatIterator Tensor<RANK>::getFlatIterator() {
         return _iterator;
@@ -103,8 +103,6 @@ namespace nw
         return operators::dot(_iterator.begin(), _iterator.end(), size());
 
     }
-
-
 }
 
 

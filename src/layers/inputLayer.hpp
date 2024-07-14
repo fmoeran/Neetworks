@@ -15,7 +15,7 @@ namespace nw
         void propagate() override;
 
         template<typename InputIter>
-        void loadInputs(InputIter begin, InputIter end);
+        void loadInputs(InputIter iter);
 
         FlatIterator getOutputs() override;
 
@@ -27,8 +27,8 @@ namespace nw
     };
 
     template<typename It>
-    void InputLayer::loadInputs(It begin, It end) {
-        _values.assign(begin, end);
+    void InputLayer::loadInputs(It iter) {
+        _values.assign(iter);
     }
 
 }
