@@ -16,11 +16,16 @@ namespace nw
 
         FlatIterator getOutputs() override;
 
+        FlatIterator backPropagate(FlatIterator outputDerivatives);
+
         [[nodiscard]] size_t size() const override;
 
     private:
         size_t _size;
         Tensor<1> _biases, _values, _activatedValues;
         Tensor<2> _weights;
+        Tensor<1> _biaseDerivatives;
+        Tensor<2> _weightDerivatives;
+
     };
 }

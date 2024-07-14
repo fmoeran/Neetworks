@@ -18,6 +18,12 @@ namespace nw
         /// Retrieves a Tensor iterator of values that the layer has produced AFTER a propagate() call
         virtual FlatIterator getOutputs() { return FlatIterator(); };
 
+        /// Runs the backpropagation algorithm on this layer. Updating the layer's internal derivatives.\n
+        /// Also retrieves a Tensor iterator of the derivatives of the previous layer's outputs.\n
+        /// (dCost)/(dPrevOut) for every prevOut
+        /// \param outputDerivatives The derivative of cost with respect to the outputs of this layer in the last pass.
+        virtual FlatIterator backPropagate(FlatIterator outputDerivatives) {return FlatIterator(); }
+
         // Returns the size of the output vector of the layer
         [[nodiscard]] virtual size_t size() const { return 0; };
 

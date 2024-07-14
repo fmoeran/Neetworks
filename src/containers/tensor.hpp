@@ -11,6 +11,7 @@
 #include <cassert> // assert
 #include <array>
 #include <initializer_list>
+#include <vector>
 
 
 namespace nw {
@@ -20,6 +21,7 @@ namespace nw {
     public:
         FlatIterator();
         FlatIterator(float* pBegin, float* pEnd);
+        FlatIterator(std::vector<float> vec);
         float* begin();
 
         float* end();
@@ -77,6 +79,13 @@ namespace nw {
 
         float dot(const float *a, const float *b, size_t size);
 
+        ///  Hadamard (inner) product of two tensors.
+        void hadamard(FlatIterator a, FlatIterator b, FlatIterator result);
+
+        /// The tensor product with two vectors.
+        /// Later implementations of the full tensor product yet to come
+        void vecTensorProduct(FlatIterator u, FlatIterator v, Tensor<2>& result);
+
         /// multiplies a matrix by a vector.
         /// \param m matrix pointer
         /// \param v vector pointer
@@ -90,6 +99,12 @@ namespace nw {
         /// \param v vector iterator
         /// \param result result vector iterator
         void vecMatMul(FlatIterator m, FlatIterator v, FlatIterator result);
+
+        /// Same as vecMatMul but with the matrix transposed
+        void vecMatTransposeMul(float* m, float *v, float *result, size_t matWidth, size_t matHeight);
+
+        /// Same as vecMatMul but with the matrix transposed
+        void vecMatTransposeMul(FlatIterator m, FlatIterator v, FlatIterator result);
     }
 }
 

@@ -35,6 +35,24 @@ namespace nw
             return out;
         }
 
+        void hadamard(FlatIterator a, FlatIterator b, FlatIterator result) {
+            assert(a.size() == b.size() && b.size() == result.size());
+            float *ita=a.begin(), *itb=b.begin(), *itr=result.begin();
+            while (ita!=a.end()) {
+                *itr = (*ita)*(*itb);
+            }
+        }
+
+        void vecTensorProduct(FlatIterator u, FlatIterator v, Tensor<2>& result) {
+            assert(u.size()*v.size() == result.size());
+
+            for (size_t i=0; i<u.size(); i++) {
+                for (size_t j=0; j<v.size(); j++) {
+                    result.get({i, j}) = u.begin()[i]*v.begin()[j];
+                }
+            }
+        }
+
         void vecMatMul(float *m, float *v, float *result, size_t matWidth, size_t matHeight) {
             assert(v != result && m != result);
             std::memset((void *) result, 0, matHeight * sizeof(float));
@@ -53,6 +71,24 @@ namespace nw
             size_t matHeight = result.size();
             vecMatMul(m.begin(), v.begin(), result.begin(), matWidth, matHeight);
         }
+
+        void vecMatTransposeMul(float* m, float *v, float *result, size_t matWidth, size_t matHeight) {
+            assert(v != result && m != result);
+            std::memset((void *) result, 0, matHeight * sizeof(float));
+
+            for (size_t col=0; col < matWidth; col++) {
+                for (size_t row=0; row < matHeight; row++) {
+                    result[col] += m[col * matHeight + row] * v[row];
+                }
+            }
+        }
+
+        void vecMatTransposeMul(FlatIterator m, FlatIterator v, FlatIterator result){
+            assert(m.size() == v.size() * result.size());
+            size_t matWidth = result.size();
+            size_t matHeight = v.size();
+            vecMatTransposeMul(m.begin(), v.begin(), result.begin(), matWidth, matHeight);
+        }
     }
 
     FlatIterator::FlatIterator() {
@@ -63,6 +99,11 @@ namespace nw
     FlatIterator::FlatIterator(float* pBegin, float* pEnd) {
         _begin = pBegin;
         _end = pEnd;
+    }
+
+    FlatIterator::FlatIterator(std::vector<float> vec) {
+        _begin = vec.begin().base();
+        _end = vec.end().base();
     }
 
     float *FlatIterator::begin() {
@@ -89,5 +130,6 @@ namespace nw
         }
         return os;
     }
+
 
 }

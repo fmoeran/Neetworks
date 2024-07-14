@@ -8,7 +8,7 @@
 #include <string>
 #include <fstream>
 
-// a containor for training/test data for a neural network
+// a container for training/test data for a neural network
 struct Data {
     std::vector<std::vector<float>> inputs;
     std::vector<std::vector<float>> targets;

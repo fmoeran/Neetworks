@@ -4,24 +4,24 @@
 #include "layers/denseLayer.hpp"
 #include "activations/sigmoid.hpp"
 #include "network.hpp"
+#include "dataHandler.hpp"
 
 int main() {
     using namespace nw;
 
-    Network net(5);
+    Network net(784);
     Sigmoid sig;
-    DenseLayer d1(5, net.inputLayer(), &sig);
-    DenseLayer d2(5, &d1, &sig);
+
+    DenseLayer d1(16, &net.inputLayer(), &sig);
+    DenseLayer d2(16, &d1, &sig);
+    DenseLayer d3(10, &d2, &sig);
     net.addLayer(&d1);
     net.addLayer(&d2);
+    net.addLayer(&d3);
 
-    std::vector<float> inputVec = {0, 1, -1, 0, 0};
-    Tensor<1> input({5});
-    input.assign(inputVec);
+    Data trainingData = getMnistTestData();
 
-    net.feedForward(input.getFlatIterator());
-
-    std::cout << net << std::endl;
+    net.train(trainingData, 1, 1000);
 
     return 0;
 }
