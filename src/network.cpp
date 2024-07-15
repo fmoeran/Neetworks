@@ -118,7 +118,7 @@ namespace nw
     int Network::getSingleOutput() {
         FlatIterator it = getOutput();
         int max = 0;
-        for (int i=0; i<it.size(); i++) {
+        for (size_t i=0; i<it.size(); i++) {
             if (it[i] > it[max]) max = i;
         }
         return max;

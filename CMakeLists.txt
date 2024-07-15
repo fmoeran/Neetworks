@@ -12,6 +12,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 #file(GLOB SOURCE_FILES src/*.hpp src/*.cpp)
 
+add_compile_definitions(USE_PARALLEL)
+
 add_executable(AI src/main.cpp
         src/containers/tensor.hpp src/containers/tensor.tpp
         src/activation.hpp

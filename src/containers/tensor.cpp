@@ -1,8 +1,11 @@
 //
 // Created by Felix Moeran on 04/04/2024.
 //
-#include <cstring>
 #include "tensor.hpp"
+#include <algorithm>
+#include <ranges>
+#include <cstring>
+#include <execution>
 
 namespace nw
 {
@@ -52,9 +55,14 @@ namespace nw
             }
         }
 
-        void vecMatMul(float *m, float *v, float *result, size_t matWidth, size_t matHeight) {
-            assert(v != result && m != result);
-            std::memset((void *) result, 0, matHeight * sizeof(float));
+        void vecMatMul(FlatIterator m, FlatIterator v, FlatIterator result) {
+            assert(m.size() == v.size() * result.size());
+            assert(v.begin() != result.begin() && m.begin() != result.begin());
+
+            size_t matWidth = v.size();
+            size_t matHeight = result.size();
+
+            std::memset((void*) result.begin(), 0, matHeight * sizeof(float));
 
             for (size_t row = 0; row < matHeight; row++) {
                 for (size_t col = 0; col < matWidth; col++) {
@@ -63,17 +71,10 @@ namespace nw
             }
         }
 
-
-        void vecMatMul(FlatIterator m, FlatIterator v, FlatIterator result) {
-            assert(m.size() == v.size() * result.size());
-            size_t matWidth = v.size();
-            size_t matHeight = result.size();
-            vecMatMul(m.begin(), v.begin(), result.begin(), matWidth, matHeight);
-        }
-
         void vecMatTransposeMul(float* m, float *v, float *result, size_t matWidth, size_t matHeight) {
             assert(v != result && m != result);
             std::memset((void *) result, 0, matWidth * sizeof(float));
+
 
             for (size_t col=0; col < matWidth; col++) {
                 for (size_t row=0; row < matHeight; row++) {

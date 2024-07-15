@@ -12,10 +12,9 @@ namespace nw
 {
     class __Optimizer {
     public:
+        virtual void registerLayers(std::vector<__Layer*> layers) {};
 
-        virtual void registerLayers(std::vector<__Layer*> layers);
-
-        virtual void updateLayers(size_t batchSize);
+        virtual void updateLayers(size_t batchSize) {};
     };
 }
 
