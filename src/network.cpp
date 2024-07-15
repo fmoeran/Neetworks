@@ -5,6 +5,8 @@
 #include "network.hpp"
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
+#include <string>
 
 const int LOADING_BAR_WIDTH = 30;
 
@@ -123,13 +125,16 @@ namespace nw
     }
 
     void Network::_printEpochProgressBar(float progress) {
-        std::cout << "[";
+        std::string out = "";
+        out += "[";
         int pos = (int) (LOADING_BAR_WIDTH * progress);
         for (int i=0; i<LOADING_BAR_WIDTH; i++) {
-            if (i <= pos) std::cout << "=";
-            else std::cout << " ";
+            if (i <= pos) out += "=";
+            else out += " ";
         }
-        std::cout << "]" << int(progress * 100) << "%\r";
+        // TODO: fix
+        out += "]" + std::to_string(int(progress * 100)) + "%\r";
+        std::cout << out;
         std::cout.flush();
     }
 

@@ -7,6 +7,7 @@
 #include <fstream>
 #include <random>
 #include <cassert>
+#include <algorithm>
 
 std::default_random_engine rnd;
 

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include "containers/tensor.hpp"
 #include "layers/denseLayer.hpp"
 #include "activations/sigmoid.hpp"
@@ -25,7 +24,7 @@ int main() {
 
     Data trainingData = getMnistTrainingData();
 
-    net.train(trainingData, 30, 10);
+    net.train(trainingData, 50, 10);
 
     system("pause");
 }

@@ -9,7 +9,7 @@ namespace nw
 {
     void Sigmoid::apply(FlatIterator it, FlatIterator res) {
         assert(it.size() == res.size());
-        for (int i = 0; i < it.size(); i++) {
+        for (size_t i = 0; i < it.size(); i++) {
             res[i] = apply(it[i]);
         }
     }
@@ -20,7 +20,7 @@ namespace nw
 
     void Sigmoid::applyDeriv(FlatIterator it, FlatIterator res) {
         assert(it.size() == res.size());
-        for (int i = 0; i < it.size(); i++) {
+        for (size_t i = 0; i < it.size(); i++) {
             res[i] = applyDeriv(it[i]);
         }
     }
