@@ -67,9 +67,18 @@ namespace nw
         return prevLayerDerivatives.getFlatIterator();
     }
 
-    void DenseLayer::resetDerivatives() {
+    void DenseLayer::resetGradients() {
         std::fill(_weightDerivatives.getFlatIterator().begin(), _weightDerivatives.getFlatIterator().end(), 0.0);
         std::fill(_biaseDerivatives.getFlatIterator().begin(), _biaseDerivatives.getFlatIterator().end(), 0.0);
+    }
+
+    std::vector<GradientIterator> DenseLayer::getParameterGradients() {
+        std::vector<GradientIterator> out;
+
+        out.emplace_back(_weights, _weightDerivatives);
+        out.emplace_back(_biases, _biaseDerivatives);
+
+        return out;
     }
 
     void DenseLayer::update(size_t N, float rate) {
@@ -77,8 +86,9 @@ namespace nw
         _biaseDerivatives *= -rate / (float)N;
         _weights += _weightDerivatives;
         _biaseDerivatives += _biaseDerivatives;
-        resetDerivatives();
+        resetGradients();
     }
+
 
 
 }

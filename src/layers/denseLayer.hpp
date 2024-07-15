@@ -15,11 +15,13 @@ namespace nw
 
         FlatIterator getOutputs() override;
 
-        FlatIterator backPropagate(FlatIterator outputDerivatives);
+        FlatIterator backPropagate(FlatIterator outputDerivatives) override;
 
         [[nodiscard]] size_t size() const override;
 
-        void resetDerivatives() override;
+        void resetGradients() override;
+
+        std::vector<GradientIterator> getParameterGradients() override;
 
         void update(size_t N, float rate) override;
 

@@ -9,6 +9,9 @@
 
 namespace nw
 {
+    /// References a tensor and its members' gradients (derivatives)
+    struct GradientIterator;
+
 
     struct __Layer {
     public:
@@ -22,16 +25,20 @@ namespace nw
         /// Also retrieves a Tensor iterator of the derivatives of the previous layer's outputs.\n
         /// (dCost)/(dPrevOut) for every prevOut
         /// \param outputDerivatives The derivative of cost with respect to the outputs of this layer in the last pass.
-        virtual FlatIterator backPropagate(FlatIterator outputDerivatives) {return FlatIterator(); }
+        virtual FlatIterator backPropagate(FlatIterator outputDerivatives) {return FlatIterator();}
 
         /// Resets all derivative values to 0, allowing backpropagation to begin altering them again.
         /// This is used in Network::train.
-        virtual void resetDerivatives() {};
+        virtual void resetGradients() {};
 
+        /// Retrieves a vector of gradient iterators
+        /// storing the gradients of each parameter in the layer. Used by optimizers in compilation and training.
+        virtual std::vector<GradientIterator> getParameterGradients() {return {};};
 
+        /// TODO: delete
         virtual void update(size_t N, float rate) {};
 
-        // Returns the size of the output vector of the layer
+        /// Returns the size of the output vector of the layer
         [[nodiscard]] virtual size_t size() const { return 0; };
 
     protected:
@@ -41,8 +48,36 @@ namespace nw
         __Layer *_previous;
     };
 
+    struct GradientIterator {
+
+        GradientIterator() {parameters = FlatIterator(); gradients = FlatIterator();}
+
+        GradientIterator(FlatIterator parameterIterator, FlatIterator gradientIterator) {
+            if (parameterIterator.size() != gradientIterator.size()) {
+                throw std::invalid_argument("Parameter tensor must have same size as gradient tensor.");
+            }
+
+            parameters = parameterIterator;
+            gradients  = gradientIterator;
+        }
 
 
-;
+        template<size_t RANK>
+        GradientIterator(Tensor<RANK>& parameterTensor, Tensor<RANK>& gradientTensor){
+            if (parameterTensor.size() != gradientTensor.size()) {
+                throw std::invalid_argument("Parameter tensor must have same size as gradient tensor.");
+            }
+
+            parameters = parameterTensor.getFlatIterator();
+            gradients  = gradientTensor.getFlatIterator();
+
+        }
+
+        size_t size() {return parameters.size();}
+
+        FlatIterator parameters;
+        FlatIterator gradients;
+    };
+
 }
 

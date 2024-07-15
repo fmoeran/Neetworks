@@ -79,8 +79,6 @@ namespace nw
 
             updateNetworkParams(batchSize);
         }
-
-//        updateNetworkParams(trainingData.count);
     }
 
     void Network::_trainSingle(FlatIterator input, FlatIterator target) {
