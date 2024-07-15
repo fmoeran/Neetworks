@@ -33,8 +33,6 @@ namespace nw
 
         // Returns the size of the output vector of the layer
         [[nodiscard]] virtual size_t size() const { return 0; };
-        /// TODO: delete this
-        virtual void printWeightD(size_t N) {};
 
     protected:
         /// non-linear activation function

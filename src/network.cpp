@@ -69,6 +69,7 @@ namespace nw
         int batchCount = trainingData.count / batchSize;
         for (int currentBatch=0; currentBatch<batchCount; currentBatch++) {
             _printEpochProgressBar((float)currentBatch/(float)batchCount);
+
             int batchStart = currentBatch*batchSize;
             int batchEnd = batchStart + batchSize;
 
@@ -79,6 +80,7 @@ namespace nw
             updateNetworkParams(batchSize);
         }
 
+//        updateNetworkParams(trainingData.count);
     }
 
     void Network::_trainSingle(FlatIterator input, FlatIterator target) {
@@ -113,7 +115,7 @@ namespace nw
 
     void Network::updateNetworkParams(int batchSize) {
         for (auto layer : _layers) {
-            layer->update(batchSize, 0.1);
+            layer->update(batchSize, 0.5);
         }
     }
 

@@ -23,7 +23,6 @@ namespace nw
 
         void update(size_t N, float rate) override;
 
-        void printWeightD(size_t N) override;
 
     private:
         size_t _size;

@@ -22,10 +22,9 @@ namespace nw
         for (size_t i = 0; i < this->size(); i++) {
             _biases.get({i}) = distribution(generator);
             for (size_t j = 0; j < _previous->size(); j++) {
-                _weights.get({i, j}) = 1.0f;
+                _weights.get({i, j}) = distribution(generator);
             }
         }
-
     }
 
     void DenseLayer::propagate() {
@@ -66,13 +65,6 @@ namespace nw
                                       prevLayerDerivatives.getFlatIterator());
 
         return prevLayerDerivatives.getFlatIterator();
-    }
-
-    void DenseLayer::printWeightD(size_t N) {
-        for (float val : _weightDerivatives.getFlatIterator()) {
-            std::cout << val << ' ';
-        }
-        std::cout << std::endl;
     }
 
     void DenseLayer::resetDerivatives() {
