@@ -5,13 +5,11 @@
 #include "denseLayer.hpp"
 #include <random>
 
-
-namespace nw
-{
+namespace nw {
     DenseLayer::DenseLayer(size_t size, __Layer *prev, __Activation *activation)
             : _size(size), _biases({size}), _values({size}),
               _activatedValues({size}), _weights({size, prev->size()}),
-              _biaseDerivatives({size}), _weightDerivatives({size, prev->size()}){
+              _biaseDerivatives({size}), _weightDerivatives({size, prev->size()}) {
         _previous = prev;
         _activation = activation;
 
@@ -41,14 +39,16 @@ namespace nw
         // Calculate derivative of Cost w.r.t the parameter of the activation function
         // These are also the change to the derivative w.r.t the bias terms
         Tensor<1> internalDerivatives({size()});
-        operators::hadamard(outputDerivatives, activationDerivatives.getFlatIterator(), internalDerivatives.getFlatIterator());
+        operators::hadamard(outputDerivatives, activationDerivatives.getFlatIterator(),
+                            internalDerivatives.getFlatIterator());
 
         // Calculate change to the derivative of Cost w.r.t weights
         Tensor<2> changeWeightDerivatives({size(), _previous->size()});
-        operators::vecTensorProduct(internalDerivatives.getFlatIterator(), _previous->getOutputs(), changeWeightDerivatives);
+        operators::vecTensorProduct(internalDerivatives.getFlatIterator(), _previous->getOutputs(),
+                                    changeWeightDerivatives);
 
         // Update parameter derivatives
-        _biaseDerivatives  += internalDerivatives;
+        _biaseDerivatives += internalDerivatives;
         _weightDerivatives += changeWeightDerivatives;
 
         // Derivative of Cost w.r.t the previous layer's output.
@@ -74,13 +74,13 @@ namespace nw
     }
 
     void DenseLayer::update(size_t N, float rate) {
-        _weightDerivatives *= -rate / (float)N;
-        _biaseDerivatives *= -rate / (float)N;
+        _weightDerivatives *= -rate / (float) N;
+        _biaseDerivatives *= -rate / (float) N;
+
         _weights += _weightDerivatives;
         _biaseDerivatives += _biaseDerivatives;
+
         resetGradients();
     }
-
-
 
 }

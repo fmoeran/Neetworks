@@ -77,7 +77,7 @@ namespace nw
                 _trainSingle(trainingData.inputs[dataIndex], trainingData.targets[dataIndex]);
             }
 
-            updateNetworkParams(batchSize);
+            _optimizer->updateLayers(batchSize);
         }
     }
 
@@ -107,14 +107,10 @@ namespace nw
         }
     }
 
-    void Network::compile(__Cost *cost) {
+    void Network::compile(__Cost *cost, __Optimizer* optimizer) {
         _cost = cost;
-    }
-
-    void Network::updateNetworkParams(int batchSize) {
-        for (auto layer : _layers) {
-            layer->update(batchSize, 0.5);
-        }
+        _optimizer = optimizer;
+        _optimizer->registerLayers(_layers);
     }
 
     int Network::getSingleOutput() {

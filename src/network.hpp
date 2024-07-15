@@ -8,6 +8,7 @@
 #include "layers/inputLayer.hpp"
 #include "dataHandler.hpp"
 #include "cost.hpp"
+#include "optimizer.hpp"
 #include <vector>
 
 namespace nw
@@ -24,16 +25,16 @@ namespace nw
         /// Runs the NN, updating the values stored in each layer
         void feedForward(FlatIterator inputIterator);
 
-        void compile(__Cost* cost);
+        void compile(__Cost* cost, __Optimizer* optimizer);
 
-
-        /// TODO
+        /// Trains the network on a given dataset.
+        /// \param trainingData The dataset to train the network on.
+        /// \param epochs The number of epochs (cycles of training on the training data) to be performed.
+        /// \param batchSize The size of the mini batches within each epoch. The size of the trainingData must be divisible by this.
         void train(Data trainingData, int epochs, int batchSize, bool track=true);
-
 
         /// Returns the output that the network most favoured in the most recent pass
         int getSingleOutput();
-
 
         /// Pointer to the final layer in the network
         /// Often used to assign a new layer after this one
@@ -52,6 +53,7 @@ namespace nw
         std::vector<__Layer *> _layers;
         InputLayer *_inputLayerPtr;
         __Cost* _cost;
+        __Optimizer* _optimizer;
 
         // Current Epoch info
         int _currentEpochCorrect;
@@ -65,8 +67,6 @@ namespace nw
         static void _printEpochProgressBar(float progress);
 
         void _printEpochInfo(int currentEpoch, int trainingSize);
-
-        void updateNetworkParams(int batchSize);
 
         friend std::ostream &operator<<(std::ostream &os, Network &n);
     };
