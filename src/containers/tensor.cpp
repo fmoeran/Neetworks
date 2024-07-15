@@ -1,6 +1,7 @@
 //
 // Created by Felix Moeran on 04/04/2024.
 //
+
 #include "tensor.hpp"
 #include <algorithm>
 #include <ranges>
@@ -130,6 +131,4 @@ namespace nw
         }
         return os;
     }
-
-
 }

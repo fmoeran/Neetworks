@@ -35,9 +35,6 @@ namespace nw
         /// storing the gradients of each parameter in the layer. Used by optimizers in compilation and training.
         virtual std::vector<GradientIterator> getParameterGradients() {return {};};
 
-        /// TODO: delete
-        virtual void update(size_t N, float rate) {};
-
         /// Returns the size of the output vector of the layer
         [[nodiscard]] virtual size_t size() const { return 0; };
 

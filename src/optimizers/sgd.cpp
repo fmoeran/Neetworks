@@ -30,8 +30,10 @@ namespace nw
         FlatIterator parameters = gradientIterator.parameters;
         FlatIterator gradients  = gradientIterator.gradients;
 
+        // gradients *= -_learningRate / batchSize
         operators::mul(gradients.begin(), -_learningRate / (float)batchSize, gradients.begin(), gradients.size());
 
+        // parameters += gradients
         operators::add(parameters.begin(), gradients.begin(), parameters.begin(), parameters.size());
     }
 

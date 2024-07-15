@@ -73,14 +73,4 @@ namespace nw {
         return out;
     }
 
-    void DenseLayer::update(size_t N, float rate) {
-        _weightDerivatives *= -rate / (float) N;
-        _biaseDerivatives *= -rate / (float) N;
-
-        _weights += _weightDerivatives;
-        _biaseDerivatives += _biaseDerivatives;
-
-        resetGradients();
-    }
-
 }

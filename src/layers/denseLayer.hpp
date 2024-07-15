@@ -23,7 +23,6 @@ namespace nw
 
         std::vector<GradientIterator> getParameterGradients() override;
 
-        void update(size_t N, float rate) override;
 
 
     private:

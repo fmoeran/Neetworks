@@ -26,5 +26,7 @@ add_executable(AI src/main.cpp
         src/layers/denseLayer.hpp src/layers/denseLayer.cpp
         src/layers/inputLayer.hpp src/layers/inputLayer.cpp
         src/network.hpp src/network.cpp
-        src/optimizers/sgd.cpp src/optimizers/sgd.hpp)
+        src/optimizers/sgd.cpp src/optimizers/sgd.hpp
+        src/optimizers/momentum.cpp
+        src/optimizers/momentum.hpp)
 

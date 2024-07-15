@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <random>
+#include <cstring>
 
 
 namespace nw
@@ -13,6 +14,8 @@ namespace nw
         _size = std::accumulate(dimensions.begin(), dimensions.end(), 1, std::multiplies<>());
         _data = std::make_unique<float[]>(size());
         _iterator = FlatIterator(_data.get(), _data.get() + _size);
+
+        std::memset(_data.get(), 0.0, _size * sizeof(float));
 
         memcpy(_dimensions, dimensions.begin(), RANK * sizeof(size_t));
     }
