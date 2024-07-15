@@ -1,5 +1,8 @@
 #pragma once
+
 #include <iostream>
+#include <random>
+
 
 namespace nw
 {
@@ -43,6 +46,18 @@ namespace nw
     void Tensor<RANK>::assign(InputIter iter) {
         assert(iter.size() == size());
         std::copy(iter.begin(), iter.end(), _data.get());
+    }
+
+
+    template<size_t RANK>
+    void Tensor<RANK>::randomizeNormal() {
+        std::random_device rd{};
+        std::default_random_engine generator{rd()};
+        std::normal_distribution<float> distribution;
+
+        for (float& value : getFlatIterator()) {
+            value = distribution(generator);
+        }
     }
 
     template<size_t RANK>
@@ -103,6 +118,7 @@ namespace nw
         return operators::dot(_iterator.begin(), _iterator.end(), size());
 
     }
+
 
 }
 

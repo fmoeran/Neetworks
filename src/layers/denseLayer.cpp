@@ -15,16 +15,8 @@ namespace nw
         _previous = prev;
         _activation = activation;
 
-        std::random_device rd{};
-        std::default_random_engine generator{rd()};
-        std::normal_distribution<float> distribution;
-
-        for (size_t i = 0; i < this->size(); i++) {
-            _biases.get({i}) = distribution(generator);
-            for (size_t j = 0; j < _previous->size(); j++) {
-                _weights.get({i, j}) = distribution(generator);
-            }
-        }
+        _biases.randomizeNormal();
+        _weights.randomizeNormal();
     }
 
     void DenseLayer::propagate() {

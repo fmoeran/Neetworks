@@ -55,6 +55,9 @@ namespace nw {
         template<typename InputIter>
         void assign(InputIter iter);
 
+        /// Sets all of the values randomly according to a normal distribution
+        void randomizeNormal();
+
         void operator+=(float scalar);
 
         void operator+=(Tensor<RANK> &tensor);
