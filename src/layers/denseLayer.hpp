@@ -31,6 +31,8 @@ namespace nw
         Tensor<2> _weights;
         Tensor<1> _biaseDerivatives;
         Tensor<2> _weightDerivatives;
+        // The derivative of the cost w.r.t the previous layer's output
+        Tensor<1> _prevLayerDerivatives;
 
     };
 }

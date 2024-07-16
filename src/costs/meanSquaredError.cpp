@@ -19,7 +19,7 @@ namespace nw
     void MSE::applyDeriv(FlatIterator target, FlatIterator found, FlatIterator result) {
         assert(target.size() == found.size() && found.size() == result.size());
         for (size_t i=0; i<target.size(); i++) {
-            result[i] = 2 * (found[i] - target[i]);
+            result[i] = (found[i] - target[i]);
         }
     }
 }

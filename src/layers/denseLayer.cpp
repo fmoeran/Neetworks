@@ -9,7 +9,8 @@ namespace nw {
     DenseLayer::DenseLayer(size_t size, __Layer *prev, __Activation *activation)
             : _size(size), _biases({size}), _values({size}),
               _activatedValues({size}), _weights({size, prev->size()}),
-              _biaseDerivatives({size}), _weightDerivatives({size, prev->size()}) {
+              _biaseDerivatives({size}), _weightDerivatives({size, prev->size()}), _prevLayerDerivatives({prev->size()})
+              {
         _previous = prev;
         _activation = activation;
 
@@ -52,11 +53,12 @@ namespace nw {
         _weightDerivatives += changeWeightDerivatives;
 
         // Derivative of Cost w.r.t the previous layer's output.
-        Tensor<1> prevLayerDerivatives({_previous->size()});
+        // The reason this has to be a member variable is that it needs to stay in scope when this function finishes,
+        // Otherwise its iterator would be pointing to free memory.
         operators::vecMatTransposeMul(_weights.getFlatIterator(), internalDerivatives.getFlatIterator(),
-                                      prevLayerDerivatives.getFlatIterator());
+                                      _prevLayerDerivatives.getFlatIterator());
 
-        return prevLayerDerivatives.getFlatIterator();
+        return _prevLayerDerivatives.getFlatIterator();
     }
 
     void DenseLayer::resetGradients() {
