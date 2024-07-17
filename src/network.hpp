@@ -11,6 +11,7 @@
 #include "optimizer.hpp"
 #include <vector>
 #include <string>
+#include <fstream>
 
 namespace nw
 {
@@ -61,6 +62,10 @@ namespace nw
         /// Returns the input tensor most recently used by the network
         FlatIterator getInput();
 
+        /// Tells the network to upload all of the statistics of the learning to the csv file at csvLocation
+        /// \param csvLocation Location of the csv file, must end in .csv
+        void autoSaveStats(const std::string& csvLocation, std::ios_base::openmode mode=std::ios::out);
+
     private:
         /// Network parameters
         std::vector<__Layer *> _layers;
@@ -70,12 +75,17 @@ namespace nw
 
         /// Current Epoch info
         std::string _epochProgressBar;
+        int _currentEpoch;
         int _epochTrainingCorrect, _epochTestingCorrect;
         float _epochTestingCost; // average
 
+        /// File where every epoch's statistics are stored
+        std::string _epochStatsLocation;
+        std::ofstream _epochStatsCSV;
+
         void _trainEpoch(Data trainingData, int batchSize);
 
-        // Forward and Back propagates the data on the input, updating the gradients of layers
+        /// Forward and Back propagates the data on the input, updating the gradients of layers
         void _trainSingle(FlatIterator input, FlatIterator target);
 
         void _backPropagate(FlatIterator target);
@@ -84,10 +94,18 @@ namespace nw
 
         void _printEpochProgressBar(float progress);
 
-        void _printEpochInfo(int currentEpoch, int trainingSize, Data testData);
+        void _printEpochInfo(size_t trainingSize, Data testData);
 
         /// Runs the network on the testData, updating _epochTestingCorrect and _epochTestingCost
         void _runTest(Data testData);
+
+        /// Opens _epochStatsCSV using _epochStatsLocation
+        void _openStatsCSV(std::ios_base::openmode mode=std::ios::app);
+        /// Closes _epochStatsCSV
+        void _closeStatsCSV();
+
+        /// Uploads the last epoch's stats to epochStatsCSV
+        void _uploadEpochStats(size_t trainingSize, size_t testSize);
 
         friend std::ostream &operator<<(std::ostream &os, Network &n);
     };

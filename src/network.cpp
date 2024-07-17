@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <string>
+#include <fstream>
 
 const int LOADING_BAR_WIDTH = 30;
 
@@ -17,12 +18,12 @@ namespace nw
         _inputLayerPtr = new InputLayer(inputSize);
         _layers.push_back(_inputLayerPtr);
 
+        _currentEpoch         = 0;
         _epochTrainingCorrect = 0;
         _epochTestingCorrect  = 0;
         _epochTestingCost     = 0;
         _cost                 = nullptr;
         _optimizer            = nullptr;
-
     }
 
     void Network::addLayer(__Layer *layer) {
@@ -67,12 +68,15 @@ namespace nw
 
 
     void Network::train(Data trainingData, int epochs, int batchSize, Data testData) {
+        if (trainingData.size() % batchSize != 0) {
+            throw std::invalid_argument("The trainingData.size() must be divisible by batchSize");
+        }
         // Run the epochs
-        for (int currentEpoch = 0; currentEpoch < epochs; currentEpoch++) {
-            trainingData.shuffle();
-            _epochTrainingCorrect = 0;
+        for (_currentEpoch = 0; _currentEpoch < epochs; _currentEpoch++) {
             _trainEpoch(trainingData, batchSize);
-            _printEpochInfo(currentEpoch, trainingData.size(), testData);
+            _runTest(testData);
+            _printEpochInfo(trainingData.size(), testData);
+            _uploadEpochStats(trainingData.size(), testData.size());
         }
     }
 
@@ -82,11 +86,10 @@ namespace nw
     }
 
     void Network::_trainEpoch(Data trainingData, int batchSize) {
-        if (trainingData.size() % batchSize != 0) {
-            throw std::invalid_argument("The trainingData.size() must be divisible by batchSize");
-        }
+        _epochTrainingCorrect = 0;
+        trainingData.shuffle();
 
-        int batchCount = trainingData.size() / batchSize;
+        int batchCount = (int)trainingData.size() / batchSize;
         for (int currentBatch=0; currentBatch<batchCount; currentBatch++) {
             _printEpochProgressBar((float)currentBatch/(float)batchCount);
 
@@ -140,7 +143,7 @@ namespace nw
     }
 
     int Network::getSingleOutput() {
-        return getOutput().maxIndex();
+        return (int)getOutput().maxIndex();
     }
 
     void Network::_printEpochProgressBar(float progress) {
@@ -157,14 +160,13 @@ namespace nw
         std::cout.flush();
     }
 
-    void Network::_printEpochInfo(int currentEpoch, int trainingSize, Data testData) {
-        _runTest(testData);
+    void Network::_printEpochInfo(size_t trainingSize, Data testData) {
 
         // clear loading bar
         for (size_t i=0; i<_epochProgressBar.size(); i++) std::cout << ' ';
         std::cout << '\r';
 
-        std::cout << "Epoch " << currentEpoch+1 << ": ";
+        std::cout << "Epoch " << _currentEpoch+1 << ": ";
         std::cout << "Training = " << _epochTrainingCorrect << "/" << trainingSize << " ";
         if (testData.size() > 0) {
             std::cout << "Testing = " << _epochTestingCorrect << "/" << testData.size() << " ";
@@ -184,4 +186,36 @@ namespace nw
         }
         _epochTestingCost /= (float)testData.size();
     }
+
+    void Network::_openStatsCSV(std::ios_base::openmode mode) {
+        _epochStatsCSV.open(_epochStatsLocation, mode);
+        if (!_epochStatsCSV.is_open()) {
+            throw std::runtime_error("Could not open csv file.");
+        }
+    }
+
+    void Network::_closeStatsCSV() {
+        _epochStatsCSV.close();
+    }
+
+    void Network::autoSaveStats(const std::string& csvLocation, std::ios_base::openmode mode) {
+        _epochStatsLocation = csvLocation;
+        _openStatsCSV(mode);
+
+        _epochStatsCSV << "Epoch,Training Accuracy,Testing Accuracy,Cost\n";
+        _closeStatsCSV();
+    }
+
+    void Network::_uploadEpochStats(size_t trainingSize, size_t testSize) {
+        if (_epochStatsLocation.empty()) return;
+
+        _openStatsCSV();
+        _epochStatsCSV << _currentEpoch + 1 << ",";
+        _epochStatsCSV << ((float)_epochTrainingCorrect / (float)trainingSize) << ",";
+        _epochStatsCSV << ((float)_epochTestingCorrect / (float)testSize) << ",";
+        _epochStatsCSV << _epochTestingCost;
+        _epochStatsCSV << '\n';
+        _closeStatsCSV();
+    }
+
 }

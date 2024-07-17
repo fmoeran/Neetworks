@@ -78,13 +78,12 @@ namespace mnist
         file.read((char*)r, sizeof(r));
         file.read((char*)c, sizeof(c));
 
-        magic = ((int)m[0] << 24) | ((int)m[1] << 16) | ((int)m[2] << 8) | ((int)m[3]);
+        magic =    ((int)m[0] << 24) | ((int)m[1] << 16) | ((int)m[2] << 8) | ((int)m[3]);
         numItems = ((int)n[0] << 24) | ((int)n[1] << 16) | ((int)n[2] << 8) | ((int)n[3]);
-        rows = ((int)r[0] << 24) | ((int)r[1] << 16) | ((int)r[2] << 8) | ((int)r[3]);
-        cols = ((int)c[0] << 24) | ((int)c[1] << 16) | ((int)c[2] << 8) | ((int)c[3]);
+        rows =     ((int)r[0] << 24) | ((int)r[1] << 16) | ((int)r[2] << 8) | ((int)r[3]);
+        cols =     ((int)c[0] << 24) | ((int)c[1] << 16) | ((int)c[2] << 8) | ((int)c[3]);
 
         assert(magic == 2051);
-
 
         std::vector<unsigned char> out(numItems * rows * cols);
         file.read((char*)out.begin().base(), numItems * rows * cols);
