@@ -10,11 +10,13 @@
 
 // a container for training/test data for a neural network
 struct Data {
+public:
     std::vector<std::vector<float>> inputs;
     std::vector<std::vector<float>> targets;
-    size_t count;
     Data();
     Data(std::vector<std::vector<float>>& inp, std::vector<std::vector<float>>& targ);
+
+    size_t size();
 
     void shuffle();
 

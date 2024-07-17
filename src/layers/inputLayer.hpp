@@ -14,8 +14,7 @@ namespace nw
 
         void propagate() override;
 
-        template<typename InputIter>
-        void loadInputs(InputIter iter);
+        void loadInputs(FlatIterator iter);
 
         FlatIterator getOutputs() override;
 
@@ -26,10 +25,7 @@ namespace nw
         Tensor<1> _values;
     };
 
-    template<typename It>
-    void InputLayer::loadInputs(It iter) {
-        _values.assign(iter);
-    }
+
 
 }
 

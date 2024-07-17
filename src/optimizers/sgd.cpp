@@ -22,7 +22,6 @@ namespace nw
             for (GradientIterator iterator : iterators) {
                 _updateParameter(iterator, batchSize);
             }
-            layer->resetGradients();
         }
     }
 

@@ -35,13 +35,15 @@ namespace nw {
     FlatIterator DenseLayer::backPropagate(FlatIterator outputDerivatives) {
         // Calculate derivative of output w.r.t the parameter of the activation function
         Tensor<1> activationDerivatives({size()});
-        _activation->apply(_values.getFlatIterator(), activationDerivatives.getFlatIterator());
+        _activation->applyDeriv(_values.getFlatIterator(), activationDerivatives.getFlatIterator());
 
         // Calculate derivative of Cost w.r.t the parameter of the activation function
         // These are also the change to the derivative w.r.t the bias terms
         Tensor<1> internalDerivatives({size()});
         operators::hadamard(outputDerivatives, activationDerivatives.getFlatIterator(),
                             internalDerivatives.getFlatIterator());
+
+        FlatIterator it = internalDerivatives.getFlatIterator();
 
         // Calculate change to the derivative of Cost w.r.t weights
         Tensor<2> changeWeightDerivatives({size(), _previous->size()});
@@ -62,8 +64,9 @@ namespace nw {
     }
 
     void DenseLayer::resetGradients() {
-        std::fill(_weightDerivatives.getFlatIterator().begin(), _weightDerivatives.getFlatIterator().end(), 0.0);
-        std::fill(_biaseDerivatives.getFlatIterator().begin(), _biaseDerivatives.getFlatIterator().end(), 0.0);
+        _weightDerivatives.fill(0);
+        _biaseDerivatives.fill(0);
+        _prevLayerDerivatives.fill(0);
     }
 
     std::vector<GradientIterator> DenseLayer::getParameterGradients() {

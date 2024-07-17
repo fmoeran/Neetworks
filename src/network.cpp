@@ -16,6 +16,13 @@ namespace nw
     Network::Network(size_t inputSize) {
         _inputLayerPtr = new InputLayer(inputSize);
         _layers.push_back(_inputLayerPtr);
+
+        _epochTrainingCorrect = 0;
+        _epochTestingCorrect  = 0;
+        _epochTestingCost     = 0;
+        _cost                 = nullptr;
+        _optimizer            = nullptr;
+
     }
 
     void Network::addLayer(__Layer *layer) {
@@ -26,7 +33,6 @@ namespace nw
         if (inputLayer().size() != inputIterator.size()) {
             throw std::invalid_argument("Input is not the same size as the network's input.");
         }
-        assert(_inputLayerPtr->size() == inputIterator.size());
         _inputLayerPtr->loadInputs(inputIterator);
         for (__Layer* layer : _layers) {
             layer->propagate();
@@ -55,20 +61,32 @@ namespace nw
         return os;
     }
 
-    void Network::train(Data trainingData, int epochs, int batchSize, bool track) {
+    float Network::getCost(FlatIterator target) {
+        return _cost->apply(target, getOutput());
+    }
+
+
+    void Network::train(Data trainingData, int epochs, int batchSize, Data testData) {
         // Run the epochs
         for (int currentEpoch = 0; currentEpoch < epochs; currentEpoch++) {
             trainingData.shuffle();
-            _currentEpochCorrect = 0;
+            _epochTrainingCorrect = 0;
             _trainEpoch(trainingData, batchSize);
-            _printEpochInfo(currentEpoch, trainingData.count);
+            _printEpochInfo(currentEpoch, trainingData.size(), testData);
         }
+    }
 
+    void Network::train(Data trainingData, int epochs, int batchSize) {
+        Data testData;
+        train(trainingData, epochs, batchSize, testData);
     }
 
     void Network::_trainEpoch(Data trainingData, int batchSize) {
-        assert(trainingData.count % batchSize == 0);
-        int batchCount = trainingData.count / batchSize;
+        if (trainingData.size() % batchSize != 0) {
+            throw std::invalid_argument("The trainingData.size() must be divisible by batchSize");
+        }
+
+        int batchCount = trainingData.size() / batchSize;
         for (int currentBatch=0; currentBatch<batchCount; currentBatch++) {
             _printEpochProgressBar((float)currentBatch/(float)batchCount);
 
@@ -78,16 +96,16 @@ namespace nw
             for (int dataIndex=batchStart; dataIndex<batchEnd; dataIndex++) {
                 _trainSingle(trainingData.inputs[dataIndex], trainingData.targets[dataIndex]);
             }
-
             _optimizer->updateLayers(batchSize);
+            _resetGradients();
         }
     }
 
     void Network::_trainSingle(FlatIterator input, FlatIterator target) {
         feedForward(input);
 
-        if (getSingleOutput() == std::distance(target.begin(), std::max_element(target.begin(), target.end()))) {
-            _currentEpochCorrect++;
+        if (getSingleOutput() == target.maxIndex()) {
+            _epochTrainingCorrect++;
         }
 
         _backPropagate(target);
@@ -109,6 +127,12 @@ namespace nw
         }
     }
 
+    void Network::_resetGradients() {
+        for (__Layer* layer : _layers) {
+            layer->resetGradients();
+        }
+    }
+
     void Network::compile(__Cost *cost, __Optimizer* optimizer) {
         _cost = cost;
         _optimizer = optimizer;
@@ -116,33 +140,48 @@ namespace nw
     }
 
     int Network::getSingleOutput() {
-        FlatIterator it = getOutput();
-        int max = 0;
-        for (size_t i=0; i<it.size(); i++) {
-            if (it[i] > it[max]) max = i;
-        }
-        return max;
+        return getOutput().maxIndex();
     }
 
     void Network::_printEpochProgressBar(float progress) {
-        std::string out = "";
-        out += "[";
+        _epochProgressBar = "";
+        _epochProgressBar += "[";
         int pos = (int) (LOADING_BAR_WIDTH * progress);
         for (int i=0; i<LOADING_BAR_WIDTH; i++) {
-            if (i <= pos) out += "=";
-            else out += " ";
+            if (i <= pos) _epochProgressBar += "=";
+            else _epochProgressBar += " ";
         }
-        // TODO: fix
-        out += "]" + std::to_string(int(progress * 100)) + "%\r";
-        std::cout << out;
+
+        _epochProgressBar += "]" + std::to_string(int(progress * 100)) + "%\r";
+        std::cout << _epochProgressBar;
         std::cout.flush();
     }
 
-    void Network::_printEpochInfo(int currentEpoch, int trainingSize) {
+    void Network::_printEpochInfo(int currentEpoch, int trainingSize, Data testData) {
+        _runTest(testData);
+
         // clear loading bar
-        for (int i=0; i<LOADING_BAR_WIDTH+10; i++) std::cout << ' ';
+        for (size_t i=0; i<_epochProgressBar.size(); i++) std::cout << ' ';
         std::cout << '\r';
-        std::cout << "Epoch " << currentEpoch+1 << ": Training = " << _currentEpochCorrect << "/" << trainingSize;
+
+        std::cout << "Epoch " << currentEpoch+1 << ": ";
+        std::cout << "Training = " << _epochTrainingCorrect << "/" << trainingSize << " ";
+        if (testData.size() > 0) {
+            std::cout << "Testing = " << _epochTestingCorrect << "/" << testData.size() << " ";
+            std::cout << "Cost = " << _epochTestingCost << " ";
+        }
         std::cout << std::endl;
+    }
+
+    void Network::_runTest(Data testData) {
+        _epochTestingCorrect = 0;
+        _epochTestingCost    = 0;
+        for (size_t testIndex=0; testIndex < testData.size(); testIndex++) {
+            FlatIterator input(testData.inputs[testIndex]), target = testData.targets[testIndex];
+            feedForward(input);
+            _epochTestingCorrect += (getSingleOutput() == target.maxIndex());
+            _epochTestingCost    += getCost(target);
+        }
+        _epochTestingCost /= (float)testData.size();
     }
 }

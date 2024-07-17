@@ -17,4 +17,8 @@ namespace nw
     size_t InputLayer::size() const {
         return _size;
     }
+
+    void InputLayer::loadInputs(FlatIterator iter) {
+        _values.assign(iter);
+    }
 }

@@ -28,6 +28,8 @@ namespace nw {
 
         size_t size();
 
+        size_t maxIndex();
+
         float& operator[](size_t ind);
     private:
         float *_begin, *_end;
@@ -58,6 +60,8 @@ namespace nw {
         /// Sets all of the values randomly according to a normal distribution
         void randomizeNormal();
 
+        void fill(float val);
+
         void operator+=(float scalar);
 
         void operator+=(Tensor<RANK> &tensor);
@@ -71,6 +75,7 @@ namespace nw {
         size_t _dimensions[RANK]{}, _size;
         FlatIterator _iterator;
     };
+
 
 
     namespace operators {
@@ -90,23 +95,15 @@ namespace nw {
         void vecTensorProduct(FlatIterator u, FlatIterator v, Tensor<2>& result);
 
         /// multiplies a matrix by a vector.
-        /// \param m matrix pointer
-        /// \param v vector pointer
-        /// \param result result vector pointer
-        /// \param matWidth number of columns in m, size of v
-        /// \param matHeight number of rows in m, size result
-        void vecMatMul(float* m, float *v, float *result, size_t matWidth, size_t matHeight);
-
-        /// multiplies a matrix by a vector.
         /// \param m matrix iterator
         /// \param v vector iterator
         /// \param result result vector iterator
         void vecMatMul(FlatIterator m, FlatIterator v, FlatIterator result);
 
-        /// Same as vecMatMul but with the matrix transposed
-        void vecMatTransposeMul(float* m, float *v, float *result, size_t matWidth, size_t matHeight);
-
-        /// Same as vecMatMul but with the matrix transposed
+        /// Multiplies the transpose of matrix with the vector
+        /// \param m matrix iterator
+        /// \param v vector iterator
+        /// \param result result vector iterator
         void vecMatTransposeMul(FlatIterator m, FlatIterator v, FlatIterator result);
     }
 }

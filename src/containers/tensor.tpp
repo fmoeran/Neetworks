@@ -64,6 +64,12 @@ namespace nw
     }
 
     template<size_t RANK>
+    void Tensor<RANK>::fill(float val) {
+        FlatIterator iter = getFlatIterator();
+        std::fill(iter.begin(), iter.end(), val);
+    }
+
+    template<size_t RANK>
     void Tensor<RANK>::operator+=(float scalar) {
         operators::add(_iterator.begin(), scalar, _iterator.begin(), size());
     }

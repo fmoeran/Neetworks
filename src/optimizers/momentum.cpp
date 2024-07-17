@@ -33,7 +33,6 @@ namespace nw
                 _updateParameter(layerGradients[paramIndex], batchSize, layerMoments[paramIndex].getFlatIterator());
             }
 
-            _layers[layerIndex]->resetGradients();
         }
     }
 

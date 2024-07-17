@@ -22,9 +22,6 @@ namespace nw
         void resetGradients() override;
 
         std::vector<GradientIterator> getParameterGradients() override;
-
-
-
     private:
         size_t _size;
         Tensor<1> _biases, _values, _activatedValues;

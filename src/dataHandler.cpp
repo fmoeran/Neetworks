@@ -8,35 +8,39 @@
 #include <random>
 #include <cassert>
 #include <algorithm>
+#include <exception>
 
 std::default_random_engine rnd;
 
 
 Data::Data(std::vector<std::vector<float>>& inp, std::vector<std::vector<float>>& targ) {
-    assert(inp.size() == targ.size());
+    if (inp.size() != targ.size()) {
+        throw std::invalid_argument("Input and target vectors must have the same size");
+    }
     inputs = inp;
     targets = targ;
-    count = inp.size();
 }
 
 Data::Data() {
     inputs = std::vector<std::vector<float>>(0);
     targets = std::vector<std::vector<float>>(0);
-    count = 0;
 }
 
 void Data::shuffle() {
-    std::vector<size_t> inds(count);
-    for (int i=0; i<count; i++) inds[i] = i;
+    std::vector<size_t> inds(size());
+    std::iota(inds.begin(), inds.end(), 0);
     std::shuffle(inds.begin(), inds.end(), rnd);
     std::vector<std::vector<float>> oldInputs = inputs;
     std::vector<std::vector<float>> oldTargets = targets;
-    for (int i=0; i<count; i++) {
+    for (int i=0; i<size(); i++) {
         inputs[i] = oldInputs[inds[i]];
         targets[i] = oldTargets[inds[i]];
     }
 }
 
+size_t Data::size() {
+    return inputs.size();
+}
 
 namespace mnist
 {

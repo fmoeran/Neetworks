@@ -4,7 +4,6 @@
 #include "activations/sigmoid.hpp"
 #include "costs/meanSquaredError.hpp"
 #include "optimizers/sgd.hpp"
-#include "optimizers/momentum.hpp"
 #include "network.hpp"
 #include "dataHandler.hpp"
 
@@ -14,29 +13,20 @@ int main() {
     Network net(784);
     Sigmoid sig;
     MSE mse;
-    SGD sgd(0.1);
-    Momentum mom(0.1, 0.9);
+    SGD sgd(3);
 
-    DenseLayer d1(128, &net.inputLayer(), &sig);
-    DenseLayer d2(128, &d1, &sig);
-    DenseLayer d3(10, &d2, &sig);
+    DenseLayer d1(30, &net.inputLayer(), &sig);
+    DenseLayer d2(10, &d1, &sig);
+
     net.addLayer(&d1);
     net.addLayer(&d2);
-    net.addLayer(&d3);
 
-    net.compile(&mse, &mom);
+    net.compile(&mse, &sgd);
 
     Data trainingData = getMnistTrainingData();
+    Data testData     = getMnistTestData();
 
-    net.train(trainingData, 30, 10);
-
-
-
-//    Tensor<1> t({5});
-//    t.randomizeNormal();
-//    std::cout << t << std::endl;
-//    FlatIterator it = t.getFlatIterator();
-//    std::cout << it << std::endl;
+    net.train(trainingData, 1, 10, testData);
 
     system("pause");
 }
