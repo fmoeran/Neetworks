@@ -28,5 +28,7 @@ add_executable(AI src/main.cpp
         src/network.hpp src/network.cpp
         src/optimizers/sgd.cpp src/optimizers/sgd.hpp
         src/optimizers/momentum.cpp
-        src/optimizers/momentum.hpp)
+        src/optimizers/momentum.hpp
+        src/activations/relu.cpp
+        src/activations/relu.hpp)
 
