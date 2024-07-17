@@ -18,7 +18,7 @@ namespace nw
         return 1.0f / (1 + std::exp(-z));
     }
 
-    void Sigmoid::applyDeriv(FlatIterator it, FlatIterator res) {
+    void Sigmoid::applyDerivative(FlatIterator it, FlatIterator res) {
         assert(it.size() == res.size());
         for (size_t i = 0; i < it.size(); i++) {
             res[i] = applyDeriv(it[i]);

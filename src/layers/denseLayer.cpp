@@ -35,7 +35,7 @@ namespace nw {
     FlatIterator DenseLayer::backPropagate(FlatIterator outputDerivatives) {
         // Calculate derivative of output w.r.t the parameter of the activation function
         Tensor<1> activationDerivatives({size()});
-        _activation->applyDeriv(_values.getFlatIterator(), activationDerivatives.getFlatIterator());
+        _activation->applyDerivative(_values.getFlatIterator(), activationDerivatives.getFlatIterator());
 
         // Calculate derivative of Cost w.r.t the parameter of the activation function
         // These are also the change to the derivative w.r.t the bias terms

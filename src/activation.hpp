@@ -12,7 +12,7 @@ namespace nw {
         virtual void apply(FlatIterator it, FlatIterator res) {};
 
         // applies the derivative to an entire FlatIterator, placing the result in res
-        virtual void applyDeriv(FlatIterator it, FlatIterator res) {};
+        virtual void applyDerivative(FlatIterator it, FlatIterator res) {};
     };
 
 

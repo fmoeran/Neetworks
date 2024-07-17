@@ -15,7 +15,7 @@ namespace nw{
 
         float apply(float z);
 
-        void applyDeriv(FlatIterator it, FlatIterator res) override;
+        void applyDerivative(FlatIterator it, FlatIterator res) override;
 
         float applyDeriv(float z);
     };
