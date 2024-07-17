@@ -5,7 +5,7 @@ A low level C++ Neural Network library, designed to allow developers to create t
 ## Example programs
 
 For demonstration purposes, Neetworks comes packaged with the [mnist data set](https://yann.lecun.com/exdb/mnist/) and a number of classic neural network features. Below is a 784x30x10 MLP using sigmoid activation functions, 
-a mean squared error cost function, and stochastic gradient descent over 5 epochs with a mini-batch size of 10.
+a mean squared error cost function, and stochastic gradient descent with a learning rate of 3 over 5 epochs with a mini-batch size of 10.
 
 ```c++
 #include "containers/tensor.hpp"
