@@ -75,7 +75,7 @@ namespace nw
         for (_currentEpoch = 0; _currentEpoch < epochs; _currentEpoch++) {
             _trainEpoch(trainingData, batchSize);
             _runTest(testData);
-            _printEpochInfo(trainingData.size(), testData);
+            _printEpochInfo(trainingData.size(), testData.size());
             _uploadEpochStats(trainingData.size(), testData.size());
         }
     }
@@ -87,6 +87,8 @@ namespace nw
 
     void Network::_trainEpoch(Data trainingData, int batchSize) {
         _epochTrainingCorrect = 0;
+        _epochStartTime = std::chrono::high_resolution_clock::now();
+
         trainingData.shuffle();
 
         int batchCount = (int)trainingData.size() / batchSize;
@@ -121,7 +123,7 @@ namespace nw
 
         // Get derivative of last layer
         Tensor<1> outputLayerDerivatives({getOutputLayer().size()});
-        _cost->applyDeriv(target, getOutput(), outputLayerDerivatives.getFlatIterator());
+        _cost->applyDerivative(target, getOutput(), outputLayerDerivatives.getFlatIterator());
         FlatIterator derivativeIterator = outputLayerDerivatives.getFlatIterator();
 
         // Iterate backwards through layers
@@ -147,6 +149,7 @@ namespace nw
     }
 
     void Network::_printEpochProgressBar(float progress) {
+
         _epochProgressBar = "";
         _epochProgressBar += "[";
         int pos = (int) (LOADING_BAR_WIDTH * progress);
@@ -155,21 +158,25 @@ namespace nw
             else _epochProgressBar += " ";
         }
 
-        _epochProgressBar += "]" + std::to_string(int(progress * 100)) + "%\r";
+        _epochProgressBar += "]" + std::to_string(int(progress * 100)) + "% ";
+        _epochProgressBar += std::to_string(_getEpochDuration()) + "s";
+        _epochProgressBar += "\r";
+
         std::cout << _epochProgressBar;
         std::cout.flush();
     }
 
-    void Network::_printEpochInfo(size_t trainingSize, Data testData) {
+    void Network::_printEpochInfo(size_t trainingSize, size_t testSize) {
 
         // clear loading bar
         for (size_t i=0; i<_epochProgressBar.size(); i++) std::cout << ' ';
         std::cout << '\r';
 
-        std::cout << "Epoch " << _currentEpoch+1 << ": ";
+        std::cout << "Epoch " << _currentEpoch+1;
+        std::cout <<  " (" << _getEpochDuration() << "s): ";
         std::cout << "Training = " << _epochTrainingCorrect << "/" << trainingSize << " ";
-        if (testData.size() > 0) {
-            std::cout << "Testing = " << _epochTestingCorrect << "/" << testData.size() << " ";
+        if (testSize > 0) {
+            std::cout << "Testing = " << _epochTestingCorrect << "/" << testSize << " ";
             std::cout << "Cost = " << _epochTestingCost << " ";
         }
         std::cout << std::endl;
@@ -216,6 +223,12 @@ namespace nw
         _epochStatsCSV << _epochTestingCost;
         _epochStatsCSV << '\n';
         _closeStatsCSV();
+    }
+
+    long long Network::_getEpochDuration() {
+        auto timeNow = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::seconds>(timeNow - _epochStartTime);
+        return duration.count();
     }
 
 }

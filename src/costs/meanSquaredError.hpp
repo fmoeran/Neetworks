@@ -10,7 +10,7 @@ namespace nw
     public:
         float apply(FlatIterator target, FlatIterator found) override;
 
-        void applyDeriv(FlatIterator target, FlatIterator found, FlatIterator result) override;
+        void applyDerivative(FlatIterator target, FlatIterator found, FlatIterator result) override;
 
 
     };

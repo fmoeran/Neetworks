@@ -13,11 +13,11 @@ namespace nw{
     public:
         void apply(FlatIterator it, FlatIterator res) override;
 
-        float apply(float z);
+        static float applySingle(float z);
 
         void applyDerivative(FlatIterator it, FlatIterator res) override;
 
-        float applyDeriv(float z);
+        static float applyDerivativeSingle(float z);
     };
 }
 

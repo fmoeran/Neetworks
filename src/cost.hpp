@@ -10,7 +10,7 @@ namespace nw {
     public:
         virtual float apply(FlatIterator target, FlatIterator found) {return 0.0;};
 
-        virtual void applyDeriv(FlatIterator target, FlatIterator found, FlatIterator result) {};
+        virtual void applyDerivative(FlatIterator target, FlatIterator found, FlatIterator result) {};
 
 
     };

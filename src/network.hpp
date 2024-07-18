@@ -12,6 +12,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <chrono>
 
 namespace nw
 {
@@ -74,6 +75,7 @@ namespace nw
         __Optimizer* _optimizer;
 
         /// Current Epoch info
+        std::chrono::time_point<std::chrono::high_resolution_clock> _epochStartTime;
         std::string _epochProgressBar;
         int _currentEpoch;
         int _epochTrainingCorrect, _epochTestingCorrect;
@@ -92,9 +94,14 @@ namespace nw
 
         void _resetGradients();
 
+        /// Returns the number of seconds since the last call of _trainEpoch
+        long long _getEpochDuration();
+
         void _printEpochProgressBar(float progress);
 
-        void _printEpochInfo(size_t trainingSize, Data testData);
+        /// Displays all of the training and test information.
+        /// NOTE _runTest should be run before this.
+        void _printEpochInfo(size_t trainingSize, size_t testSize);
 
         /// Runs the network on the testData, updating _epochTestingCorrect and _epochTestingCost
         void _runTest(Data testData);

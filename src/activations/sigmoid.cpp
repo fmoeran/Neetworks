@@ -4,29 +4,29 @@
 #include "sigmoid.hpp"
 #include <cmath>
 #include <cassert>
+#include <algorithm>
+#include <execution>
 
 namespace nw
 {
     void Sigmoid::apply(FlatIterator it, FlatIterator res) {
         assert(it.size() == res.size());
-        for (size_t i = 0; i < it.size(); i++) {
-            res[i] = apply(it[i]);
-        }
+
+        std::transform(std::execution::par_unseq,it.begin(), it.end(), res.begin(), applySingle);
     }
 
-    float Sigmoid::apply(float z) {
+    float Sigmoid::applySingle(float z) {
         return 1.0f / (1 + std::exp(-z));
     }
 
     void Sigmoid::applyDerivative(FlatIterator it, FlatIterator res) {
         assert(it.size() == res.size());
-        for (size_t i = 0; i < it.size(); i++) {
-            res[i] = applyDeriv(it[i]);
-        }
+
+        std::transform(std::execution::par_unseq, it.begin(), it.end(), res.begin(), applyDerivativeSingle);
     }
 
-    float Sigmoid::applyDeriv(float z) {
-        float res = apply(z);
+    float Sigmoid::applyDerivativeSingle(float z) {
+        float res = applySingle(z);
         return res * (1 - res);
     }
 
