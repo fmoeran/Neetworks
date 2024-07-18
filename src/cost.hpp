@@ -5,7 +5,8 @@
 #pragma once
 #include "activation.hpp"
 
-namespace nw {
+namespace nw
+{
     class __Cost {
     public:
         virtual float apply(FlatIterator target, FlatIterator found) {return 0.0;};

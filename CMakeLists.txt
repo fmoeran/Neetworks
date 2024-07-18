@@ -30,5 +30,7 @@ add_executable(AI src/main.cpp
         src/optimizers/momentum.cpp
         src/optimizers/momentum.hpp
         src/activations/relu.cpp
-        src/activations/relu.hpp)
+        src/activations/relu.hpp
+        src/costs/crossEntropy.cpp
+        src/costs/crossEntropy.hpp)
 
