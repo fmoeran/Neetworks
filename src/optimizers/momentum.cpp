@@ -17,8 +17,8 @@ namespace nw
         _layers = layers;
         for (auto layer : _layers) {
             _moments.emplace_back();
-            for (GradientIterator gradIter : layer->getParameterGradients()) {
-                _moments.back().push_back(Tensor<1>({gradIter.size()}));
+            for (FlatIterator paramIter: layer->getParameters()) {
+                _moments.back().push_back(Tensor<1>({paramIter.size()}));
             }
         }
     }
@@ -26,21 +26,20 @@ namespace nw
     void Momentum::updateLayers(size_t batchSize) {
         for (size_t layerIndex=0; layerIndex < _layers.size(); layerIndex++) {
 
-            std::vector<Tensor<1>>& layerMoments          = _moments[layerIndex];
-            std::vector<GradientIterator> layerGradients = _layers[layerIndex]->getParameterGradients();
+            std::vector<Tensor<1>>& layerMoments         = _moments[layerIndex];
+            std::vector<FlatIterator> layerParameters    = _layers[layerIndex]->getParameters();
+            std::vector<FlatIterator> layerGradients = _layers[layerIndex]->getParameterGradients();
 
             for (size_t paramIndex=0; paramIndex < layerMoments.size(); paramIndex++) {
-                _updateParameter(layerGradients[paramIndex], batchSize, layerMoments[paramIndex].getFlatIterator());
+                _updateParameter(layerParameters[paramIndex], layerGradients[paramIndex], batchSize,
+                                 layerMoments[paramIndex].getFlatIterator());
             }
 
         }
     }
 
-    void Momentum::_updateParameter(GradientIterator gradientIterator, size_t batchSize,
+    void Momentum::_updateParameter(FlatIterator parameters, FlatIterator gradients, size_t batchSize,
                                     FlatIterator momentum) {
-        FlatIterator parameters = gradientIterator.parameters;
-        FlatIterator gradients  = gradientIterator.gradients;
-
         // momentum *= _momentumRate;
         operators::mul(momentum.begin(), _momentumRate, momentum.begin(), momentum.size());
 

@@ -60,9 +60,6 @@ namespace nw
         /// Returns the output tensor from the final layer in the network
         FlatIterator getOutput();
 
-        /// Returns the input tensor most recently used by the network
-        FlatIterator getInput();
-
         /// Tells the network to upload all of the statistics of the learning to the csv file at csvLocation
         /// \param csvLocation Location of the csv file, must end in .csv
         void autoSaveStats(const std::string& csvLocation, std::ios_base::openmode mode=std::ios::out);
@@ -73,6 +70,9 @@ namespace nw
         InputLayer *_inputLayerPtr;
         __Cost* _cost;
         __Optimizer* _optimizer;
+
+        /// After a call of Network::feedForward(), this stores the output vector of the network.
+        Tensor<1> _recentOutputs;
 
         /// Current Epoch info
         std::chrono::time_point<std::chrono::high_resolution_clock> _epochStartTime;

@@ -8,17 +8,16 @@ namespace nw
 {
     InputLayer::InputLayer(size_t size) : _size(size), _values({size}) {}
 
-    void InputLayer::propagate() {}
-
-    FlatIterator InputLayer::getOutputs() {
-        return _values.getFlatIterator();
-    }
-
     size_t InputLayer::size() const {
         return _size;
     }
 
-    void InputLayer::loadInputs(FlatIterator iter) {
-        _values.assign(iter);
+    std::unique_ptr<__Layer> InputLayer::copyToUnique() {
+        return std::make_unique<InputLayer>(size());
+    }
+
+    FlatIterator InputLayer::propagate(FlatIterator previousOutput) {
+        _values.assign(previousOutput);
+        return _values.getFlatIterator();
     }
 }

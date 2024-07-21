@@ -21,7 +21,7 @@ namespace nw
         std::vector<std::vector<Tensor<1>>> _moments;
         std::vector<__Layer *> _layers;
 
-        void _updateParameter(GradientIterator gradientIterator, size_t batchSize, FlatIterator momentum);
+        void _updateParameter(FlatIterator parameters, FlatIterator gradients, size_t batchSize, FlatIterator momentum);
 
     };
 }

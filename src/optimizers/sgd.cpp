@@ -3,6 +3,7 @@
 //
 
 #include "sgd.hpp"
+#include <stdexcept>
 
 namespace nw
 {
@@ -18,17 +19,23 @@ namespace nw
 
     void SGD::updateLayers(size_t batchSize) {
         for (__Layer* layer : _layers) {
-            std::vector<GradientIterator> iterators = layer->getParameterGradients();
-            for (GradientIterator iterator : iterators) {
-                _updateParameter(iterator, batchSize);
+            std::vector<FlatIterator> parameterIterators = layer->getParameters();
+            std::vector<FlatIterator> gradientIterators = layer->getParameterGradients();
+
+            if (parameterIterators.size() != gradientIterators.size()) {
+                throw std::runtime_error("Unequal number of parameters and gradients.");
+            }
+
+            for (size_t paramInd=0; paramInd<parameterIterators.size(); paramInd++) {
+                _updateParameter(parameterIterators[paramInd], gradientIterators[paramInd], batchSize);
             }
         }
     }
 
-    void SGD::_updateParameter(GradientIterator gradientIterator, size_t batchSize) {
-        FlatIterator parameters = gradientIterator.parameters;
-        FlatIterator gradients  = gradientIterator.gradients;
-
+    void SGD::_updateParameter(FlatIterator parameters, FlatIterator gradients, size_t batchSize) {
+        if (parameters.size() != gradients.size()) {
+            throw std::runtime_error("Unequal number of parameters and gradients.");
+        }
         // gradients *= -_learningRate / batchSize
         operators::mul(gradients.begin(), -_learningRate / (float)batchSize, gradients.begin(), gradients.size());
 
