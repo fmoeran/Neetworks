@@ -16,13 +16,7 @@
 
 namespace nw {
 
-    /// Flat Iterators exists to allow the user to traverse through a Tensor's values,
-    /// pass a tensor's values between two functions or scopes without templates being an issue,
-    /// or to allow another scope to edit the values within a tensor easily.
-    /// FlatIterators should NEVER exist on their own (without their data being owned by a Tensor)
-    /// and should only be treated as a temporary "window" to view a tensor's data.
-    /// If a FlatIterator is given to another class, that class should avoid saving the iterator for later use as the
-    /// data it points to may be freed. Instead, prefer to copy the data into a Tensor using Tensor.assign(iterator).
+    /// Iterator class used to iterate over all of the items in a Tensor
     struct FlatIterator {
     public:
         FlatIterator();
@@ -50,11 +44,6 @@ namespace nw {
     public:
         Tensor(std::initializer_list<size_t> dimensions);
 
-        /// deep copies other
-        Tensor(const Tensor<RANK>& other);
-
-        Tensor operator=(Tensor& other);
-
         /// Returns the number of floats stored by the tensor
         [[nodiscard]] size_t size() const;
 
@@ -63,9 +52,8 @@ namespace nw {
 
         float& get(std::initializer_list<size_t> pos);
 
-        FlatIterator getFlatIterator() const;
+        FlatIterator getFlatIterator();
 
-        /// copies the values from iter into the tensor.
         template<typename InputIter>
         void assign(InputIter iter);
 

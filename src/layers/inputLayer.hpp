@@ -12,9 +12,11 @@ namespace nw
     public:
         explicit InputLayer(size_t size);
 
-        FlatIterator propagate(FlatIterator previousOutput);
+        void propagate() override;
 
-        std::unique_ptr<__Layer> copyToUnique() override;
+        void loadInputs(FlatIterator iter);
+
+        FlatIterator getOutputs() override;
 
         [[nodiscard]] size_t size() const override;
 

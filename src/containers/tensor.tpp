@@ -3,7 +3,7 @@
 #include <iostream>
 #include <random>
 #include <cstring>
-#include <memory>
+
 
 namespace nw
 {
@@ -13,43 +13,11 @@ namespace nw
 
         _size = std::accumulate(dimensions.begin(), dimensions.end(), 1, std::multiplies<>());
         _data = std::make_unique<float[]>(size());
-        _iterator = FlatIterator(_data.get(), _data.get() + size());
+        _iterator = FlatIterator(_data.get(), _data.get() + _size);
 
         std::memset(_data.get(), 0.0, _size * sizeof(float));
 
         memcpy(_dimensions, dimensions.begin(), RANK * sizeof(size_t));
-    }
-
-    template<size_t RANK>
-    Tensor<RANK>::Tensor(const Tensor<RANK>& other) {
-        _size = other.size();
-        _data = std::make_unique<float[]>(size());
-        _iterator = FlatIterator(_data.get(), _data.get() + size());
-
-        // for some reason std::copy does not like to be used here
-        std::array<size_t, RANK> od = other.dimensions();
-        for (int i=0; i<RANK; i++) _dimensions[i] = od[i];
-//        std::copy(other.dimensions().begin(), other.dimensions().end(), _dimensions);
-
-        FlatIterator oit = other.getFlatIterator();
-        std::copy(oit.begin(), oit.end(), getFlatIterator().begin());
-
-    }
-
-    template<size_t RANK>
-    Tensor<RANK> Tensor<RANK>::operator=(Tensor<RANK> &other) {
-        _size = other.size();
-        _data = std::make_unique<float[]>(size());
-        _iterator = FlatIterator(_data.get(), _data.get() + size());
-
-        // for some reason std::copy does not like to be used here
-        std::array<size_t, RANK> od = other.dimensions();
-        for (int i=0; i<RANK; i++) _dimensions[i] = od[i];
-//        std::copy(other.dimensions().begin(), other.dimensions().end(), _dimensions);
-
-        FlatIterator oit = other.getFlatIterator();
-        std::copy(oit.begin(), oit.end(), getFlatIterator().begin());
-        return *this;
     }
 
     template<size_t RANK>
@@ -149,7 +117,7 @@ namespace nw
     }
 
     template<size_t RANK>
-    FlatIterator Tensor<RANK>::getFlatIterator() const {
+    FlatIterator Tensor<RANK>::getFlatIterator() {
         return _iterator;
     }
 

@@ -5,9 +5,6 @@
 #include "tensor.hpp"
 #include <algorithm>
 #include <cstring>
-#include <ranges>
-#include <execution>
-#include <omp.h>
 
 namespace nw
 {
@@ -49,13 +46,10 @@ namespace nw
 
         void vecTensorProduct(FlatIterator u, FlatIterator v, Tensor<2>& result) {
             assert(u.size()*v.size() == result.size());
-            FlatIterator r = result.getFlatIterator();
 
-            size_t height = u.size(), width = v.size();
-
-            for (size_t i=0; i<height; i++) {
-                for (size_t j=0; j<width; j++) {
-                    r[i*width + j] = u.begin()[i]*v.begin()[j];
+            for (size_t i=0; i<u.size(); i++) {
+                for (size_t j=0; j<v.size(); j++) {
+                    result.get({i, j}) = u.begin()[i]*v.begin()[j];
                 }
             }
         }
@@ -68,22 +62,12 @@ namespace nw
             size_t matHeight = result.size();
 
             std::fill(result.begin(), result.end(), 0);
-//#           pragma omp parallel for num_threads(4)
+
             for (size_t row = 0; row < matHeight; row++) {
                 for (size_t col = 0; col < matWidth; col++) {
                     result[row] += m[row * matWidth + col] * v[col];
                 }
             }
-
-//            auto func = [&] (size_t row) {
-//                for (size_t col=0, mIndex=row*matWidth; col<matWidth; col++, mIndex++) {
-//                    result[row] += m[mIndex] * v[col];
-//                }
-//            };
-//
-//            auto rows = std::views::iota(0ull, matHeight);
-//
-//            std::for_each(std::execution::par, rows.begin(), rows.end(), func);
         }
 
         void vecMatTransposeMul(FlatIterator m, FlatIterator v, FlatIterator result){
@@ -98,6 +82,7 @@ namespace nw
                     result[col] += m[row*matWidth + col] * v[row];
                 }
             }
+
         }
     }
 

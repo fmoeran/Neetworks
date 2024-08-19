@@ -20,9 +20,9 @@ namespace nw
     private:
 
         float _learningRate;
-        std::vector<__Layer *> _layers = {};
+        std::vector<__Layer *> _layers;
 
-        void _updateParameter(FlatIterator parameters, FlatIterator gradients, size_t batchSize);
+        void _updateParameter(GradientIterator gradientIterator, size_t batchSize);
 
     };
 }

@@ -14,7 +14,7 @@ const int LOADING_BAR_WIDTH = 30;
 namespace nw
 {
 
-    Network::Network(size_t inputSize): _recentOutputs({1}) {
+    Network::Network(size_t inputSize) {
         _inputLayerPtr = new InputLayer(inputSize);
         _layers.push_back(_inputLayerPtr);
 
@@ -28,26 +28,27 @@ namespace nw
 
     void Network::addLayer(__Layer *layer) {
         _layers.push_back(layer);
-        Tensor<1> t({layer->size()});
-        _recentOutputs = t;
     }
 
     void Network::feedForward(FlatIterator inputIterator) {
         if (inputLayer().size() != inputIterator.size()) {
             throw std::invalid_argument("Input is not the same size as the network's input.");
         }
-        FlatIterator layerOutput = inputIterator;
+        _inputLayerPtr->loadInputs(inputIterator);
         for (__Layer* layer : _layers) {
-            layerOutput = layer->propagate(layerOutput);
+            layer->propagate();
         }
-        _recentOutputs.assign(layerOutput);
     }
 
     __Layer& Network::getOutputLayer() {
         return *_layers.back();
     }
     FlatIterator Network::getOutput() {
-        return _recentOutputs.getFlatIterator();
+        return getOutputLayer().getOutputs();
+    }
+
+    FlatIterator Network::getInput() {
+        return _inputLayerPtr->getOutputs();
     }
 
     InputLayer& Network::inputLayer() {
@@ -56,7 +57,7 @@ namespace nw
 
     std::ostream &operator<<(std::ostream &os, Network &n) {
         for (auto layer : n._layers) {
-            os << layer << '\n';
+            os << layer->getOutputs() << '\n';
         }
         return os;
     }
@@ -64,6 +65,7 @@ namespace nw
     float Network::getCost(FlatIterator target) {
         return _cost->apply(target, getOutput());
     }
+
 
     void Network::train(Data trainingData, int epochs, int batchSize, Data testData) {
         if (trainingData.size() % batchSize != 0) {
@@ -83,9 +85,6 @@ namespace nw
         train(trainingData, epochs, batchSize, testData);
     }
 
-    // TODO: store the total parameter derivatives somewhere and give them to _optimizer.
-    // The optimizer is currently just taking the gradients from __Layer::getPatameterGradients() which only
-    // gets the gradient of the very last piece of training data, not the whole batch.
     void Network::_trainEpoch(Data trainingData, int batchSize) {
         _epochTrainingCorrect = 0;
         _epochStartTime = std::chrono::high_resolution_clock::now();
@@ -135,7 +134,7 @@ namespace nw
 
     void Network::_resetGradients() {
         for (__Layer* layer : _layers) {
-            layer->resetParameterGradients();
+            layer->resetGradients();
         }
     }
 
